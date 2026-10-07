@@ -26,12 +26,22 @@ async function send(res: ServerResponse, response: Response) {
   res.end(Buffer.from(await response.arrayBuffer()))
 }
 
+function pick(env: NodeJS.ProcessEnv): OAuthEnv {
+  const out: OAuthEnv = {}
+  if (env.GITHUB_CLIENT_ID) out.GITHUB_CLIENT_ID = env.GITHUB_CLIENT_ID
+  if (env.GITHUB_CLIENT_SECRET) out.GITHUB_CLIENT_SECRET = env.GITHUB_CLIENT_SECRET
+  return out
+}
+
 export function devApi(): Plugin {
-  let env: OAuthEnv = {}
+  let mode = 'development'
+  let envDir = process.cwd()
   const middleware = async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     const handler = ROUTES[(req.url ?? '').split('?')[0]]
     if (!handler) return next()
     try {
+      // Relê o .env.local a cada chamada: colar o secret não exige reiniciar o servidor.
+      const env: OAuthEnv = { ...loadEnv(mode, envDir, 'GITHUB_'), ...pick(process.env) }
       await send(res, await handler(await toRequest(req), env))
     } catch {
       res.statusCode = 500
@@ -41,7 +51,8 @@ export function devApi(): Plugin {
   return {
     name: 'voyager-dev-api',
     configResolved(config) {
-      env = loadEnv(config.mode, config.envDir || process.cwd(), 'GITHUB_')
+      mode = config.mode
+      envDir = config.envDir || process.cwd()
     },
     configureServer(server) {
       server.middlewares.use(middleware)

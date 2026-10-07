@@ -20,6 +20,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: pip install pyyaml
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
