@@ -365,6 +365,28 @@ updated_at: "2026-09-06T10:30:00-03:00"
 
 Portal de pedidos da Acme.
 
+## Acompanhamento
+
+```query
+title: Tasks em aberto
+type: task
+project: AC-P001
+status: [in_progress, in_review, blocked]
+columns: [code, title, status]
+```
+
+```chart
+title: Tasks por status
+type: task
+project: AC-P001
+by: status
+```
+
+```kanban
+type: task
+project: AC-P001
+```
+
 ## Links do projeto
 
 ### Planos de implementação

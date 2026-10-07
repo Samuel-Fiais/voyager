@@ -1,14 +1,19 @@
 import { useMemo } from 'react'
 import { StatusGlyph } from '@/components/status-glyph'
 import { cn } from '@/lib/utils'
-import { MiniArc } from '@/shell/mini-arc'
+import { ProjectTrajectory } from '@/record/trajectory'
 import { useNav } from '@/shell/nav'
 import { noteId } from '@/shell/nav-ids'
-import { attention, clientSummaries, projectSummaries } from '@/vault/derived'
+import { attention, projectSummaries } from '@/vault/derived'
+import { typeLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
+import { queryNotes } from '@/vault/vault-index'
 import { useWorkspace } from '@/workspace/workspace-context'
 import { NoteRow, Page, SectionHeader, ViewHeader } from './common'
+import { BarList } from './custom/bars'
+import { typeCounts, weeklyActivity } from './custom/query'
 
+// Painel (W10): indicadores, trajetória dos projetos, atividade por semana, registros por tipo e demandas.
 export function PainelView() {
   const { index } = useVault()
   const { active } = useWorkspace()
@@ -19,7 +24,9 @@ export function PainelView() {
         ? {
             att: attention(index),
             projects: projectSummaries(index),
-            clients: clientSummaries(index),
+            weeks: weeklyActivity(index, 8),
+            types: typeCounts(index),
+            demands: queryNotes(index, { type: 'demand' }),
           }
         : null,
     [index],
@@ -56,6 +63,7 @@ export function PainelView() {
           <div
             key={s.l}
             className={cn('grid gap-0.5 pt-2.5 rule-column', s.alert && s.v && 'border-nasa')}
+            data-stat={s.g}
           >
             <span
               className={cn(
@@ -73,22 +81,26 @@ export function PainelView() {
           </div>
         ))}
       </div>
+
       <div>
-        <SectionHeader title="Projetos" aside="uma marca por task, na ordem do código" />
+        <SectionHeader
+          title="Trajetória dos projetos"
+          aside="uma marca por task, na ordem do código · clique abre a task"
+        />
         {data.projects.map((p) => (
-          <button
+          <div
             key={p.note.path}
-            className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 border-b py-4 text-left hover:bg-elevated md:grid-cols-[200px_minmax(0,1fr)_120px]"
-            onClick={() => open(noteId(p.note.path))}
+            className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 border-b py-4 md:grid-cols-[200px_minmax(0,1fr)_120px]"
+            data-testid="painel-project"
           >
-            <div>
+            <button className="text-left" onClick={() => open(noteId(p.note.path))}>
               <div className="text-[24px] leading-none font-extrabold text-strong">
                 {p.note.code}
               </div>
               <div className="mt-1.5 text-[13px] text-secondary">{p.note.title}</div>
-            </div>
+            </button>
             <div className="col-span-2 row-start-2 md:col-span-1 md:row-start-auto">
-              <MiniArc tasks={p.tasks} />
+              <ProjectTrajectory tasks={p.tasks} height={64} />
             </div>
             <div className="text-right">
               <span className="text-[22px] font-extrabold text-strong tabular-nums">
@@ -96,15 +108,49 @@ export function PainelView() {
               </span>
               <small className="block text-[12px] text-faint">concluídas</small>
             </div>
-          </button>
+          </div>
         ))}
+        {!data.projects.length && <p className="py-3 text-faint">Nenhum projeto no vault.</p>}
       </div>
-      <div>
-        <SectionHeader title="Demandas abertas" aside={att.openDemands.length} />
-        {att.openDemands.map((d) => (
-          <NoteRow key={d.path} note={d} aside={String(d.data.routing ?? '')} />
-        ))}
-        {!att.openDemands.length && <p className="py-3 text-faint">Nenhuma demanda aberta.</p>}
+
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+        <div className="grid content-start gap-7">
+          <div>
+            <SectionHeader title="Atividade no vault" aside="linhas de auditoria por semana" />
+            <BarList
+              bars={data.weeks.map((w) => ({
+                key: w.key,
+                label: w.label,
+                value: w.value,
+                partial: w.partial,
+              }))}
+              unit="linhas de auditoria"
+              testId="activity"
+            />
+          </div>
+          <div>
+            <SectionHeader
+              title="Registros por tipo"
+              aside={`${data.types.length} types · 6 maiores`}
+            />
+            <BarList
+              bars={data.types.slice(0, 6).map((t) => ({
+                key: t.key,
+                label: `${typeLabel(t.key)} · ${t.key}`,
+                value: t.value,
+              }))}
+              unit="registros"
+              testId="types"
+            />
+          </div>
+        </div>
+        <div>
+          <SectionHeader title="Demandas" aside="status · encaminhamento" />
+          {data.demands.map((d) => (
+            <NoteRow key={d.path} note={d} aside={String(d.data.routing ?? '')} />
+          ))}
+          {!data.demands.length && <p className="py-3 text-faint">Nenhuma demanda.</p>}
+        </div>
       </div>
     </Page>
   )

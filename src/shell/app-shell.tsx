@@ -9,7 +9,8 @@ import { useVault } from '@/vault/vault-context'
 import { CommitSheet, WriteToast } from '@/write/commit-sheet'
 import { WriterProvider } from '@/write/writer'
 import { useNav } from './nav'
-import { notePathOf, type NavId } from './nav-ids'
+import { CustomView } from '@/views/custom/custom-view'
+import { notePathOf, viewPathOf, type NavId } from './nav-ids'
 import { Palette } from './palette'
 import { Sidebar } from './sidebar'
 import { Tabs } from './tabs'
@@ -29,6 +30,8 @@ function CurrentView({ id }: { id: NavId | null }) {
   if (id === 'kanban') return <KanbanView />
   if (id === 'demandas') return <DemandasView />
   if (id === 'arquivos') return <ArquivosView />
+  const vpath = viewPathOf(id)
+  if (vpath) return <CustomView key={vpath} path={vpath} />
   const path = notePathOf(id)
   return path ? <NoteView key={path} path={path} /> : <BlankView />
 }
