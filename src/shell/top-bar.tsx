@@ -3,10 +3,13 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { UserMenu } from '@/components/user-menu'
 import { SyncControl } from '@/workspace/sync-control'
 import { WorkspaceSwitcher } from '@/workspace/workspace-switcher'
+import { useState } from 'react'
+import { NewNoteDialog } from '@/editor/new-note-dialog'
 import { useNav } from './nav'
 
 export function TopBar({ onAddWorkspace }: { onAddWorkspace: () => void }) {
   const { setSidebarOpen, sidebarOpen, setPaletteOpen } = useNav()
+  const [creating, setCreating] = useState(false)
   return (
     <header className="flex h-[52px] min-w-0 items-center gap-2 border-b bg-panel px-2.5 md:gap-3.5 md:px-4">
       <button
@@ -33,6 +36,15 @@ export function TopBar({ onAddWorkspace }: { onAddWorkspace: () => void }) {
           ⌘K
         </kbd>
       </button>
+      <button
+        className="flex shrink-0 items-center gap-1.5 border px-2.5 py-[7px] text-[13px] text-secondary hover:border-faint hover:text-strong"
+        onClick={() => setCreating(true)}
+        aria-label="Nova nota"
+        data-testid="new-note-button"
+      >
+        +<span className="hidden lg:inline">Nova</span>
+      </button>
+      {creating && <NewNoteDialog onClose={() => setCreating(false)} />}
       <div className="ml-auto flex shrink-0 items-center gap-1">
         <SyncControl />
         <span className="hidden sm:block">

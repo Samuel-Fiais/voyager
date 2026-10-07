@@ -5,7 +5,11 @@ import { VoyagerDB, workspaceId, type WorkspaceRecord } from '@/storage/db'
 import { syncWorkspace } from '@/sync/sync'
 import { buildVaultIndex } from '@/vault/vault-index'
 import { commitChanges, ConflictError } from './commit'
+import { planCreate } from './create'
+import { planEdit, planLink } from './edit-plan'
+import { splitNote } from './note-parts'
 import { planStatusChange } from './plan'
+import { templatesFor } from '@/vault/vault-index'
 
 // Integração com o GitHub real (repositório de teste). Só roda com
 // VOYAGER_REAL_TOKEN e VOYAGER_TEST_REPO=owner/repo (ex.: Samuel-Fiais/voyager-vault-teste).
@@ -117,6 +121,49 @@ describe.runIf(token && target)('motor de escrita no GitHub real', () => {
         ConflictError,
       )
       expect((await branchHead(gh, { owner, repo }, 'main')).commit).toBe(before.commit)
+    },
+  )
+
+  it(
+    'cria demanda com vínculo de volta, edita e vincula, um commit por alteração',
+    { timeout: 120_000 },
+    async () => {
+      await db.workspaces.put((await db.workspaces.get(ws.id)) ?? ws)
+      let { w, index } = await fresh()
+      const created = planCreate({
+        index,
+        template: templatesFor(index, 'demand')[0],
+        name: `Teste de criação ${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}`,
+        client: index.byCode.get('C001')!,
+        actor: 'Samuel Fiais',
+      })
+      expect(created.errors).toEqual([])
+      const c1 = await commitChanges(gh, w, created.changes, created.message)
+      console.log(JSON.stringify({ criada: created.code, commit: c1.commit }))
+
+      ;({ w, index } = await fresh())
+      const demand = index.byCode.get(created.code)!
+      expect(demand).toBeDefined()
+      expect(index.files.get('Clientes/C001 - Acme.md')).toContain(created.code)
+      const edit = planEdit({
+        index,
+        note: demand,
+        body: `${splitNote(demand.text).body.trimEnd()}\n\nEditada no teste de integração.\n`,
+        actor: 'Samuel Fiais',
+      })
+      expect(edit.errors).toEqual([])
+      await commitChanges(gh, w, edit.changes, edit.message)
+
+      ;({ w, index } = await fresh())
+      const link = planLink({
+        index,
+        from: index.byCode.get(created.code)!,
+        to: index.byCode.get('AC-P001')!,
+        actor: 'Samuel Fiais',
+      })
+      expect(link.errors).toEqual([])
+      const c3 = await commitChanges(gh, w, link.changes, link.message)
+      expect((await branchHead(gh, { owner, repo }, 'main')).commit).toBe(c3.commit)
     },
   )
 })

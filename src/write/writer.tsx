@@ -4,6 +4,8 @@ import { db } from '@/storage/db'
 import { useVault } from '@/vault/vault-context'
 import type { VaultIndex } from '@/vault/vault-index'
 import { useWorkspace } from '@/workspace/workspace-context'
+import { useNav } from '@/shell/nav'
+import { noteId } from '@/shell/nav-ids'
 import { commitChanges, ConflictError } from './commit'
 import type { WritePlan } from './plan'
 
@@ -14,6 +16,8 @@ export interface WriteRequest {
   /** monta o plano a partir do índice atual e do motivo digitado */
   makePlan: (index: VaultIndex, reason: string, actor: string) => WritePlan | null
   reason?: { label: string; required: boolean }
+  /** chamado depois do commit e da sincronização */
+  onCommitted?: () => void
 }
 
 export type WritePhase = 'confirm' | 'committing' | 'conflict' | 'error'
@@ -49,6 +53,7 @@ export function WriterProvider({ children }: { children: ReactNode }) {
   const { session, github } = useSession()
   const { active, syncNow } = useWorkspace()
   const { index } = useVault()
+  const { open } = useNav()
   const [state, setState] = useState<WriteState | null>(null)
   const [toast, setToast] = useState<Toast | null>(null)
   const actor = session?.name?.trim() || session?.login || 'Samuel Fiais'
@@ -78,6 +83,8 @@ export function WriterProvider({ children }: { children: ReactNode }) {
       const res = await commitChanges(github, ws, plan.changes, plan.message)
       await syncNow()
       setState(null)
+      state.request.onCommitted?.()
+      if (plan.openAfter) open(noteId(plan.openAfter))
       showToast({
         title: `Commit ${res.commit.slice(0, 7)} em ${ws.branch}`,
         text: `${plan.title} · auditoria registrada${res.rebased ? ' · reaplicado sobre commits novos' : ''}`,
@@ -86,7 +93,7 @@ export function WriterProvider({ children }: { children: ReactNode }) {
       if (e instanceof ConflictError) setState({ ...state, phase: 'conflict', conflict: e })
       else setState({ ...state, phase: 'error', error: e instanceof Error ? e.message : String(e) })
     }
-  }, [state, plan, github, active, syncNow, showToast])
+  }, [state, plan, github, active, syncNow, showToast, open])
 
   /** Sincroniza e volta à confirmação com o plano refeito sobre a versão nova. */
   const resync = useCallback(async () => {
