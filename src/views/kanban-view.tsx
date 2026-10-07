@@ -25,6 +25,8 @@ import { statusLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
 import { queryNotes, type Note } from '@/vault/vault-index'
 import { useStartStatusChange } from '@/write/start-status'
+import { useMedia } from '@/lib/use-media'
+import { MOBILE } from '@/shell/mobile'
 
 // Kanban de tasks (W08): colunas na ordem do contrato, Planejada e Pronta somem quando vazias.
 // Arrastar só acende as colunas válidas; soltar fora delas não faz nada. ⋯ e teclado como alternativa.
@@ -175,6 +177,7 @@ export function KanbanView() {
   const startChange = useStartStatusChange()
   const [filter, setFilter] = useState<string>('all')
   const [dragging, setDragging] = useState<Note | null>(null)
+  const mobile = useMedia(MOBILE)
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, {
@@ -253,7 +256,12 @@ export function KanbanView() {
       >
         <div
           className="grid items-start gap-4 overflow-x-auto px-4 pt-[18px] pb-10 sm:px-6"
-          style={{ gridTemplateColumns: `repeat(${data.cols.length}, minmax(240px, 1fr))` }}
+          data-hscroll
+          style={{
+            gridTemplateColumns: mobile
+              ? `repeat(${data.cols.length}, 264px)`
+              : `repeat(${data.cols.length}, minmax(150px, 1fr))`,
+          }}
           data-testid="kanban"
         >
           {data.cols.map((s) => {

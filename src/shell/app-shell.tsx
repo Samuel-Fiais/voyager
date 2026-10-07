@@ -5,12 +5,14 @@ import { DemandasView } from '@/views/demandas-view'
 import { KanbanView } from '@/views/kanban-view'
 import { NoteView } from '@/views/note-view'
 import { PainelView } from '@/views/painel-view'
+import { useMedia } from '@/lib/use-media'
 import { useVault } from '@/vault/vault-context'
 import { CommitSheet, WriteToast } from '@/write/commit-sheet'
 import { WriterProvider } from '@/write/writer'
 import { useNav } from './nav'
 import { CustomView } from '@/views/custom/custom-view'
 import { notePathOf, viewPathOf, type NavId } from './nav-ids'
+import { BottomNav, MOBILE, MobileItemBar, Swipeable } from './mobile'
 import { Palette } from './palette'
 import { Sidebar } from './sidebar'
 import { Tabs } from './tabs'
@@ -39,9 +41,15 @@ function CurrentView({ id }: { id: NavId | null }) {
 /** Estrutura do app (VO-DS001): topo, sidebar por entidade, abas e conteúdo; gaveta abaixo de 780px. */
 export function AppShell({ onAddWorkspace }: { onAddWorkspace: () => void }) {
   const { current, sidebarOpen, setSidebarOpen } = useNav()
+  const mobile = useMedia(MOBILE)
   return (
     <WriterProvider>
-      <div className="grid h-dvh grid-rows-[52px_minmax(0,1fr)] overflow-hidden">
+      <div
+        className={cn(
+          'grid h-dvh overflow-hidden',
+          mobile ? 'grid-rows-[52px_minmax(0,1fr)_auto]' : 'grid-rows-[52px_minmax(0,1fr)]',
+        )}
+      >
         <TopBar onAddWorkspace={onAddWorkspace} />
         <div className="relative grid min-h-0 grid-cols-[minmax(0,1fr)] min-[780px]:grid-cols-[248px_minmax(0,1fr)]">
           <div
@@ -60,12 +68,13 @@ export function AppShell({ onAddWorkspace }: { onAddWorkspace: () => void }) {
             />
           )}
           <main className="grid min-h-0 min-w-0 grid-rows-[38px_minmax(0,1fr)]">
-            <Tabs />
-            <div className="min-h-0 overflow-auto" data-testid="view">
+            {mobile ? <MobileItemBar /> : <Tabs />}
+            <Swipeable enabled={mobile}>
               <CurrentView id={current} />
-            </div>
+            </Swipeable>
           </main>
         </div>
+        {mobile && <BottomNav />}
         <Palette />
         <CommitSheet />
         <WriteToast />
