@@ -15,3 +15,6 @@ export type NavId = string
 export const noteId = (path: string) => `n:${path}`
 export const isView = (id: NavId): id is ViewId => (VIEWS as readonly string[]).includes(id)
 export const notePathOf = (id: NavId) => (id.startsWith('n:') ? id.slice(2) : null)
+
+export const viewId = (path: string) => `v:${path}`
+export const viewPathOf = (id: NavId) => (id.startsWith('v:') ? id.slice(2) : null)
