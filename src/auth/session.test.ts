@@ -53,6 +53,10 @@ describe('logout', () => {
       SESSION_KEY,
       JSON.stringify({ token: 'gho_abc', login: 's', name: null, avatarUrl: '' }),
     )
+    localStorage.setItem('voyager.nav.dono/repo@main', '{"tabs":["n:Clientes/C001 - Acme.md"]}')
+    localStorage.setItem('voyager.workspace', 'dono/repo@main')
+    localStorage.setItem('voyager.theme', 'light')
+    localStorage.setItem('outro.app', 'x')
     const cleanup = vi.fn()
     onLogout(cleanup)
     const fetchMock = vi.fn(async () => new Response(null, { status: 204 }))
@@ -65,5 +69,9 @@ describe('logout', () => {
     )
     expect(cleanup).toHaveBeenCalled()
     expect(localStorage.getItem(SESSION_KEY)).toBeNull()
+    expect(localStorage.getItem('voyager.nav.dono/repo@main')).toBeNull()
+    expect(localStorage.getItem('voyager.workspace')).toBeNull()
+    expect(localStorage.getItem('voyager.theme')).toBe('light')
+    expect(localStorage.getItem('outro.app')).toBe('x')
   })
 })

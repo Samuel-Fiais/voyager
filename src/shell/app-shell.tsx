@@ -1,22 +1,41 @@
+import { lazy, Suspense } from 'react'
 import { cn } from '@/lib/utils'
-import { ArquivosView } from '@/views/arquivos-view'
 import { BlankView } from '@/views/blank-view'
 import { DemandasView } from '@/views/demandas-view'
-import { KanbanView } from '@/views/kanban-view'
-import { NoteView } from '@/views/note-view'
-import { PainelView } from '@/views/painel-view'
 import { useMedia } from '@/lib/use-media'
 import { useVault } from '@/vault/vault-context'
 import { CommitSheet, WriteToast } from '@/write/commit-sheet'
 import { WriterProvider } from '@/write/writer'
 import { useNav } from './nav'
-import { CustomView } from '@/views/custom/custom-view'
 import { notePathOf, viewPathOf, type NavId } from './nav-ids'
 import { BottomNav, MOBILE, MobileItemBar, Swipeable } from './mobile'
 import { Palette } from './palette'
 import { Sidebar } from './sidebar'
 import { Tabs } from './tabs'
 import { TopBar } from './top-bar'
+
+// Views carregadas sob demanda: o pacote inicial fica com o shell, o índice e a sincronização.
+const PainelView = lazy(() =>
+  import('@/views/painel-view').then((m) => ({ default: m.PainelView })),
+)
+const KanbanView = lazy(() =>
+  import('@/views/kanban-view').then((m) => ({ default: m.KanbanView })),
+)
+const ArquivosView = lazy(() =>
+  import('@/views/arquivos-view').then((m) => ({ default: m.ArquivosView })),
+)
+const NoteView = lazy(() => import('@/views/note-view').then((m) => ({ default: m.NoteView })))
+const CustomView = lazy(() =>
+  import('@/views/custom/custom-view').then((m) => ({ default: m.CustomView })),
+)
+
+function Loading() {
+  return (
+    <p className="p-10 label-caps" role="status">
+      Abrindo…
+    </p>
+  )
+}
 
 function CurrentView({ id }: { id: NavId | null }) {
   const { index, loading } = useVault()
@@ -70,7 +89,9 @@ export function AppShell({ onAddWorkspace }: { onAddWorkspace: () => void }) {
           <main className="grid min-h-0 min-w-0 grid-rows-[38px_minmax(0,1fr)]">
             {mobile ? <MobileItemBar /> : <Tabs />}
             <Swipeable enabled={mobile}>
-              <CurrentView id={current} />
+              <Suspense fallback={<Loading />}>
+                <CurrentView id={current} />
+              </Suspense>
             </Swipeable>
           </main>
         </div>
