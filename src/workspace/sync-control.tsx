@@ -33,8 +33,18 @@ export function SyncControl() {
         <Orbit active={busy} error={sync.status === 'error'} />
         <span className="hidden truncate md:inline">{syncLabel(sync, active.lastSyncAt)}</span>
       </span>
-      <Button variant="commit" onClick={() => void syncNow()} disabled={busy} data-testid="sync">
-        {busy ? 'Sincronizando' : 'Sincronizar'}
+      <Button
+        variant="commit"
+        className="px-2 sm:px-3"
+        onClick={() => void syncNow()}
+        disabled={busy}
+        aria-label={busy ? 'Sincronizando' : 'Sincronizar'}
+        data-testid="sync"
+      >
+        <span className="sm:hidden" aria-hidden="true">
+          ⟳
+        </span>
+        <span className="hidden sm:inline">{busy ? 'Sincronizando' : 'Sincronizar'}</span>
       </Button>
     </div>
   )
