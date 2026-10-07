@@ -9,8 +9,10 @@ export function loadFixtureVault(root = ROOT): Record<string, string | Uint8Arra
   const walk = (dir: string) => {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name)
-      if (statSync(p).isDirectory()) walk(p)
-      else {
+      if (statSync(p).isDirectory()) {
+        if (name === '.git' || name === 'node_modules') continue
+        walk(p)
+      } else {
         const rel = relative(root, p).split('\\').join('/')
         const buf = readFileSync(p)
         out[rel] = /\.(md|json|py|txt)$/.test(name) ? buf.toString('utf8') : new Uint8Array(buf)

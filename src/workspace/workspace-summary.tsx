@@ -1,5 +1,6 @@
 import { useLiveQuery } from '@/lib/use-live-query'
 import { db } from '@/storage/db'
+import { VaultHealth } from '@/vault/vault-health'
 import { formatRelative } from '@/lib/time'
 import { useWorkspace } from './workspace-context'
 
@@ -54,6 +55,7 @@ export function WorkspaceSummary() {
             ` · ${last.added} novos, ${last.modified} alterados, ${last.removed} removidos em ${(last.durationMs / 1000).toFixed(1)} s`}
         </p>
       </div>
+      <VaultHealth />
     </section>
   )
 }
