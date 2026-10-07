@@ -14,6 +14,7 @@ test('abre o vault, sincroniza só o que mudou, troca de workspace e sai limpand
   const gh = await fakeGitHub(page, { branches: ['main', 'rascunho'] })
   await signIn(page, gh)
   await openWorkspace(page)
+  await page.goto('/?v=arquivos')
 
   await expect(page.getByTestId('count-Notas')).toHaveText(String(NOTES))
   await expect(page.getByTestId('count-Anexos')).toHaveText(String(BINARIES))
@@ -39,10 +40,12 @@ test('abre o vault, sincroniza só o que mudou, troca de workspace e sai limpand
 
   await page.getByTestId('workspace-switcher').click()
   await page.getByRole('menuitemradio', { name: /vault-sintetico main/ }).click()
+  await page.goto('/?v=arquivos')
   await expect(page.getByTestId('count-Notas')).toHaveText(String(NOTES + 1))
 
   // Sair revoga o token e apaga a cópia local.
   await page.evaluate(() => sessionStorage.setItem('voyager.e2e.out', '1'))
+  await page.getByTestId('user-menu').click()
   await page.getByTestId('logout').click()
   await expect(page.getByTestId('login')).toBeVisible()
   expect(gh.revoked).toBe(true)

@@ -5,7 +5,13 @@ import { Home } from '@/screens/home'
 
 const rootRoute = createRootRoute({ component: Outlet })
 
-const homeRoute = createRoute({ getParentRoute: () => rootRoute, path: '/', component: Home })
+const homeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: Home,
+  validateSearch: (search: Record<string, unknown>): { v?: string } =>
+    typeof search.v === 'string' ? { v: search.v } : {},
+})
 const callbackRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/auth/callback',

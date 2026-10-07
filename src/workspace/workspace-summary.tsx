@@ -23,8 +23,8 @@ export function WorkspaceSummary() {
   if (!active) return null
   const last = sync.last
   return (
-    <section className="mx-auto w-full max-w-3xl px-4 py-10">
-      <div className="pt-4 rule-record">
+    <section>
+      <div>
         <p className="label-caps">
           Workspace · {active.owner}/{active.repo}
         </p>
