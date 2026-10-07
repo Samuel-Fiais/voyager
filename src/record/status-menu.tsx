@@ -5,18 +5,27 @@ import { transitionsFrom } from '@/vault/contracts'
 import { statusLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
 import type { Note } from '@/vault/vault-index'
-import { planStatusChange } from '@/write/plan'
-import { reasonLabel, REASON_REQUIRED } from '@/write/status-rules'
-import { useWriter } from '@/write/writer'
+import { useStartStatusChange } from '@/write/start-status'
 
-/** Menu de status com as transições do contrato do type; escolher abre a folha de confirmação. */
-export function StatusMenu({ note }: { note: Note }) {
+/**
+ * Menu de status com as transições do contrato do type; escolher abre a folha de confirmação.
+ * `variant="more"` é o ⋯ dos cards do kanban (alternativa ao arrastar, também por teclado).
+ */
+export function StatusMenu({
+  note,
+  variant = 'button',
+}: {
+  note: Note
+  variant?: 'button' | 'more'
+}) {
   const { index } = useVault()
-  const { start } = useWriter()
+  const startChange = useStartStatusChange()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const first = useRef<HTMLButtonElement>(null)
   useEffect(() => {
     if (!open) return
+    first.current?.focus()
     const close = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) setOpen(false)
     }
@@ -37,47 +46,72 @@ export function StatusMenu({ note }: { note: Note }) {
       ? (index.contracts.taskStatuses.find((t) => t.status === s)?.condition ?? '')
       : ''
 
+  const onMenuKey = (e: React.KeyboardEvent) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+    e.preventDefault()
+    const items = [...(ref.current?.querySelectorAll<HTMLButtonElement>('[role=menuitem]') ?? [])]
+    const i = items.indexOf(document.activeElement as HTMLButtonElement)
+    items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]?.focus()
+  }
+
   return (
-    <div className="relative" ref={ref}>
-      <button
-        className={cn(
-          'inline-flex items-center gap-2 border px-2.5 py-[5px] text-[12px] font-semibold tracking-[0.04em] hover:bg-elevated',
-          note.status === 'blocked' && 'border-nasa text-nasa',
-        )}
-        onClick={() => setOpen((o) => !o)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        data-testid="status-button"
-      >
-        <StatusGlyph status={note.status} size={11} />
-        {statusLabel(note.status)} ▾
-      </button>
+    <div
+      className="relative"
+      ref={ref}
+      onPointerDown={(e) => variant === 'more' && e.stopPropagation()}
+    >
+      {variant === 'more' ? (
+        <button
+          className="px-1 text-[15px] leading-none text-faint hover:text-strong focus-visible:text-strong"
+          onClick={(e) => {
+            e.stopPropagation()
+            setOpen((o) => !o)
+          }}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={`Mudar o status de ${note.code}`}
+          data-testid="card-more"
+        >
+          ⋯
+        </button>
+      ) : (
+        <button
+          className={cn(
+            'inline-flex items-center gap-2 border px-2.5 py-[5px] text-[12px] font-semibold tracking-[0.04em] hover:bg-elevated',
+            note.status === 'blocked' && 'border-nasa text-nasa',
+          )}
+          onClick={() => setOpen((o) => !o)}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          data-testid="status-button"
+        >
+          <StatusGlyph status={note.status} size={11} />
+          {statusLabel(note.status)} ▾
+        </button>
+      )}
       {open && (
         <div
           role="menu"
-          className="absolute top-full left-0 z-30 mt-1.5 w-[300px] max-w-[calc(100vw-2rem)] border border-strong bg-elevated shadow-layer"
+          onKeyDown={onMenuKey}
+          className={cn(
+            'absolute top-full z-30 mt-1.5 w-[300px] max-w-[calc(100vw-2rem)] border border-strong bg-elevated text-left shadow-layer',
+            variant === 'more' ? 'right-0' : 'left-0',
+          )}
           data-testid="status-menu"
         >
           <div className="border-b px-3 pt-2.5 pb-2 text-[11px] font-bold tracking-[0.08em] text-faint uppercase">
-            {note.code} · status do contrato de {note.type}
+            {note.code} · próximos status do contrato
           </div>
-          {options.map((s) => (
+          {options.map((s, i) => (
             <button
               key={s}
+              ref={i === 0 ? first : undefined}
               role="menuitem"
-              className="grid w-full grid-cols-[16px_minmax(0,1fr)] items-start gap-2.5 px-3 py-[9px] text-left hover:bg-panel"
-              onClick={() => {
+              className="grid w-full grid-cols-[16px_minmax(0,1fr)] items-start gap-2.5 px-3 py-[9px] text-left hover:bg-panel focus-visible:bg-panel focus-visible:outline-none"
+              onClick={(e) => {
+                e.stopPropagation()
                 setOpen(false)
-                const path = note.path
-                start({
-                  makePlan: (idx, reason, actor) => {
-                    const current = idx.notes.get(path)
-                    return current
-                      ? planStatusChange({ index: idx, note: current, to: s, reason, actor })
-                      : null
-                  },
-                  reason: { label: reasonLabel(s), required: REASON_REQUIRED.has(s) },
-                })
+                startChange(note.path, s)
               }}
               data-status={s}
             >
