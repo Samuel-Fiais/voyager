@@ -66,6 +66,19 @@ export class GitHubClient {
     return (await res.json()) as T
   }
 
+  /** Corpo bruto (ex.: blob raw de um anexo). */
+  async raw(path: string, accept = 'application/vnd.github.raw+json'): Promise<Blob> {
+    const res = await this.fetchImpl(`${GITHUB_API}${path}`, {
+      headers: {
+        accept,
+        authorization: `Bearer ${this.token}`,
+        'x-github-api-version': '2022-11-28',
+      },
+    })
+    if (!res.ok) throw new GitHubError(res.status, res.statusText)
+    return res.blob()
+  }
+
   user() {
     return this.request<GitHubUser>('/user')
   }
