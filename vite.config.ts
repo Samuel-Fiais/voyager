@@ -9,7 +9,20 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
-  server: { port: 5173, strictPort: true },
+  // Ambiente de desenvolvimento: só a faixa 7050–7059, em 0.0.0.0, acessado por
+  // https://<porta>.development.ngtools.com.br (7050–7053 são do App Field).
+  server: {
+    host: '0.0.0.0',
+    port: 7054,
+    strictPort: true,
+    allowedHosts: ['.development.ngtools.com.br'],
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 7055,
+    strictPort: true,
+    allowedHosts: ['.development.ngtools.com.br'],
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

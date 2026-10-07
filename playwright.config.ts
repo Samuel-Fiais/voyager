@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const PORT = 4173
+const PORT = 7055
 
 export default defineConfig({
   testDir: './e2e',
@@ -14,7 +14,7 @@ export default defineConfig({
     { name: 'celular', use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } } },
   ],
   webServer: {
-    command: `npm run build && npm run preview -- --port ${PORT} --strictPort`,
+    command: 'npm run build && npm run preview',
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
