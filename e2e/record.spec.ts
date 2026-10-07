@@ -26,10 +26,9 @@ test('páginas de registro: demanda, projeto, task, cliente e anexo', async ({ p
   await expect(tip).toContainText('depois do anterior')
   await page.screenshot({ path: info.outputPath('demanda.png'), fullPage: true })
 
-  // Status: menu só com transições do contrato, ainda só leitura
+  // Status: menu só com transições do contrato
   await page.getByTestId('status-button').click()
   await expect(page.getByTestId('status-menu')).toContainText('Recusada')
-  await expect(page.getByTestId('status-menu').getByRole('menuitem').first()).toBeDisabled()
   await page.keyboard.press('Escape')
 
   // Wikilink abre a nota certa
