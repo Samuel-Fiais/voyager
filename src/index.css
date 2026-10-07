@@ -161,6 +161,8 @@
 @layer components {
   .prose-vy {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
     gap: 12px;
     max-width: 72ch;
     color: var(--vy-secondary);

@@ -26,7 +26,7 @@ test('criar uma view grava .voyager/views com commit e auditoria', async ({ page
   const gh = await fakeGitHub(page)
   await signIn(page, gh)
   await openWorkspace(page)
-  if (isMobile) await page.getByTestId('menu-button').click()
+  if (isMobile) await page.getByTestId('bottom-vault').click()
   await page.getByTestId('new-view').click()
   await page.getByTestId('view-title').fill('Tasks bloqueadas')
   await page.getByTestId('view-type').selectOption('task')
@@ -43,7 +43,7 @@ test('criar uma view grava .voyager/views com commit e auditoria', async ({ page
   expect(json.audit[0]).toMatch(
     /\| Samuel Fiais \| created \| — \| table \| view Tasks bloqueadas \(via Voyager\)$/,
   )
-  if (isMobile) await page.getByTestId('menu-button').click()
+  if (isMobile) await page.getByTestId('bottom-vault').click()
   await page
     .getByTestId('sidebar-views')
     .getByRole('button', { name: /Tasks bloqueadas/ })

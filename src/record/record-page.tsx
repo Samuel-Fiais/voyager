@@ -24,7 +24,10 @@ function MetaLink({ path }: { path: string | null }) {
   const note = path ? index?.notes.get(path) : null
   if (!note) return null
   return (
-    <button className="uppercase hover:text-strong" onClick={() => open(noteId(note.path))}>
+    <button
+      className="text-left uppercase hover:text-strong"
+      onClick={() => open(noteId(note.path))}
+    >
       {note.code ? `${note.code} · ` : ''}
       {note.title}
     </button>
@@ -44,7 +47,10 @@ export function RecordHeader({ note, actions }: { note: Note; actions?: ReactNod
   const created = note.data.created_at ? formatShort(String(note.data.created_at)) : null
   const pr = note.data.pull_request_url ? String(note.data.pull_request_url) : null
   return (
-    <div className="grid gap-1.5 pt-3.5 rule-record" data-testid="note-header">
+    <div
+      className="grid grid-cols-[minmax(0,1fr)] gap-1.5 pt-3.5 rule-record"
+      data-testid="note-header"
+    >
       <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[11.5px] font-semibold tracking-[0.08em] text-faint uppercase">
         <span>{typeLabel(note.type)}</span>
         {note.type !== 'company' && note.type !== 'individual' && <MetaLink path={note.client} />}
