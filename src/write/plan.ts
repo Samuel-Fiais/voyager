@@ -16,6 +16,8 @@ export interface WritePlan {
   message: string
   /** erros de validação (R09) ou de regra (R05, R06); com erro não há commit */
   errors: string[]
+  /** nota a abrir depois do commit (ex.: nota criada) */
+  openAfter?: string
 }
 
 export function frontmatterDiff(before: string, after: string): string[] {

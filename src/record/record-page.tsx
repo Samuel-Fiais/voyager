@@ -1,4 +1,7 @@
-import { useMemo, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
+import { Button } from '@/components/ui/button'
+import { LinkDialog } from '@/editor/link-dialog'
+import { NoteEditor } from '@/editor/note-editor'
 import { StatusGlyph } from '@/components/status-glyph'
 import { displayBody } from '@/markdown/note-body'
 import { Markdown, type CodeRenderer } from '@/markdown/markdown'
@@ -170,16 +173,21 @@ function ClientSection({ note }: { note: Note }) {
 }
 
 /** Página de registro: cabeçalho, corpo renderizado e painel direito (desce abaixo de 1100px). */
-export function RecordPage({
-  note,
-  renderCode,
-  actions,
-}: {
-  note: Note
-  renderCode?: CodeRenderer
-  actions?: ReactNode
-}) {
+export function RecordPage({ note, renderCode }: { note: Note; renderCode?: CodeRenderer }) {
   const body = useMemo(() => displayBody(note.body, note.name), [note.body, note.name])
+  const [editing, setEditing] = useState(false)
+  const [linking, setLinking] = useState(false)
+  const actions =
+    note.hasFrontmatter && !editing ? (
+      <>
+        <Button onClick={() => setLinking(true)} data-testid="link-note">
+          Vincular
+        </Button>
+        <Button onClick={() => setEditing(true)} data-testid="edit-note">
+          Editar
+        </Button>
+      </>
+    ) : null
   return (
     <div className="grid min-h-full grid-cols-[minmax(0,1fr)] min-[1100px]:grid-cols-[minmax(0,1fr)_310px]">
       <article
@@ -189,13 +197,16 @@ export function RecordPage({
         <RecordHeader note={note} actions={actions} />
         {note.type === 'project' && <ProjectSection note={note} />}
         {(note.type === 'company' || note.type === 'individual') && <ClientSection note={note} />}
-        {body ? (
+        {editing ? (
+          <NoteEditor note={note} onDone={() => setEditing(false)} />
+        ) : body ? (
           <Markdown source={body} notePath={note.path} renderCode={renderCode} />
         ) : (
           <p className="text-faint">Nota sem conteúdo além das propriedades.</p>
         )}
       </article>
       <RightPanel note={note} />
+      {linking && <LinkDialog note={note} onClose={() => setLinking(false)} />}
     </div>
   )
 }
