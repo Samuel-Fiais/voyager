@@ -1,0 +1,158 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
+
+/*
+ * Tokens do padrão de interface VO-DS001 (Voyager).
+ * Escuro é o padrão; o claro vale quando o sistema pede e não há escolha guardada,
+ * ou quando o botão de tema grava data-theme="light".
+ */
+:root {
+  color-scheme: dark;
+  --vy-bg: #0b0b0c;
+  --vy-panel: #0e0e0f;
+  --vy-elevated: #161618;
+  --vy-line: #26262a;
+  --vy-strong: #f2f1ec;
+  --vy-secondary: #b0afa8;
+  --vy-faint: #75746e;
+  --vy-orbit: #3d3d42;
+  --vy-nasa: #fc3d21;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --vy-bg: #ffffff;
+  --vy-panel: #f7f7f5;
+  --vy-elevated: #ffffff;
+  --vy-line: #deded9;
+  --vy-strong: #0b0b0c;
+  --vy-secondary: #45453f;
+  --vy-faint: #85857e;
+  --vy-orbit: #c9c9c3;
+  --vy-nasa: #e0301b;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --vy-bg: #ffffff;
+    --vy-panel: #f7f7f5;
+    --vy-elevated: #ffffff;
+    --vy-line: #deded9;
+    --vy-strong: #0b0b0c;
+    --vy-secondary: #45453f;
+    --vy-faint: #85857e;
+    --vy-orbit: #c9c9c3;
+    --vy-nasa: #e0301b;
+  }
+}
+
+@theme inline {
+  /* Cores do VO-DS001 */
+  --color-bg: var(--vy-bg);
+  --color-panel: var(--vy-panel);
+  --color-elevated: var(--vy-elevated);
+  --color-line: var(--vy-line);
+  --color-strong: var(--vy-strong);
+  --color-secondary: var(--vy-secondary);
+  --color-faint: var(--vy-faint);
+  --color-orbit: var(--vy-orbit);
+  --color-nasa: var(--vy-nasa);
+
+  /* Nomes semânticos usados pelos componentes shadcn/ui */
+  --color-background: var(--vy-bg);
+  --color-foreground: var(--vy-strong);
+  --color-card: var(--vy-elevated);
+  --color-card-foreground: var(--vy-strong);
+  --color-popover: var(--vy-elevated);
+  --color-popover-foreground: var(--vy-strong);
+  --color-primary: var(--vy-nasa);
+  --color-primary-foreground: #ffffff;
+  --color-muted: var(--vy-panel);
+  --color-muted-foreground: var(--vy-faint);
+  --color-accent: var(--vy-elevated);
+  --color-accent-foreground: var(--vy-strong);
+  --color-destructive: var(--vy-nasa);
+  --color-border: var(--vy-line);
+  --color-input: var(--vy-line);
+  --color-ring: var(--vy-strong);
+}
+
+@theme {
+  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  /* Escala tipográfica do VO-DS001 */
+  --text-code: 56px;
+  --text-code--line-height: 1;
+  --text-code--font-weight: 800;
+  --text-title: 24px;
+  --text-title--line-height: 1.3;
+  --text-title--font-weight: 500;
+  --text-body: 15px;
+  --text-body--line-height: 1.7;
+  --text-label: 11px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+
+  /* Sem raios: tudo é retangular, como no manual da NASA */
+  --radius: 0px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+
+  /* Réguas */
+  --rule-record: 6px;
+  --rule-column: 3px;
+  --rule-section: 2px;
+  --rule-hair: 1px;
+
+  --shadow-layer: 0 8px 24px rgb(0 0 0 / 0.28);
+}
+
+/* Réguas do VO-DS001 */
+@utility rule-record {
+  border-top: var(--rule-record) solid var(--vy-strong);
+}
+@utility rule-column {
+  border-top: var(--rule-column) solid var(--vy-strong);
+}
+@utility rule-section {
+  border-bottom: var(--rule-section) solid var(--vy-strong);
+}
+@utility label-caps {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  text-transform: uppercase;
+  color: var(--vy-faint);
+}
+@utility logotype {
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+@utility measure {
+  max-width: 70ch;
+}
+
+@layer base {
+  * {
+    border-color: var(--vy-line);
+  }
+  html,
+  body {
+    background: var(--vy-bg);
+    color: var(--vy-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+  ::selection {
+    background: var(--vy-strong);
+    color: var(--vy-bg);
+  }
+}
