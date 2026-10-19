@@ -5,6 +5,7 @@ test('mostra contagens por type e status e lista links quebrados', async ({ page
   const gh = await fakeGitHub(page)
   await signIn(page, gh)
   await openWorkspace(page)
+  await page.goto('/?v=arquivos')
   const health = page.getByTestId('vault-health')
   await expect(health.getByTestId('type-task')).toContainText('6')
   await expect(health.getByTestId('type-task')).toContainText('blocked 1')

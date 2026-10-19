@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 import { FakeGitHub } from '../../testing/fake-github'
 import { loadFixtureVault } from '../../testing/fixture-vault'
 
@@ -40,7 +40,7 @@ export async function openWorkspace(page: Page, branch = 'main', opts = { naviga
   await page.getByText('samuel-teste/vault-sintetico').click()
   await page.getByTestId('branch-list').getByText(branch, { exact: true }).click()
   await page.getByTestId('workspace-switcher').filter({ hasText: branch }).waitFor()
-  await page.getByTestId('sync').filter({ hasText: 'Sincronizar' }).waitFor()
+  await expect(page.getByTestId('sync')).toBeEnabled()
 }
 
 export async function idbCounts(page: Page) {

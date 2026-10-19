@@ -44,8 +44,9 @@ test('entra pelo GitHub, lista os repositórios e sai revogando o token', async 
 
   await page.goto('/')
   await page.getByTestId('login').click()
-  await expect(page.getByTestId('logout')).toBeVisible()
+  await page.getByTestId('user-menu').click()
   await expect(page.getByTestId('user-login')).toHaveText('samuel-teste')
+  await page.getByTestId('user-menu').click()
   expect(new URL(authorizeUrl).searchParams.get('scope')).toBe('repo')
   expect(new URL(authorizeUrl).searchParams.get('client_id')).toBe('e2e-client-id')
   await expect(page.getByText('samuel-teste/knowledge-base')).toBeVisible()
@@ -54,6 +55,7 @@ test('entra pelo GitHub, lista os repositórios e sai revogando o token', async 
   const stored = await page.evaluate(() => localStorage.getItem('voyager.session'))
   expect(JSON.parse(stored!).token).toBe('gho_simulado')
 
+  await page.getByTestId('user-menu').click()
   await page.getByTestId('logout').click()
   await expect(page.getByTestId('login')).toBeVisible()
   expect(calls).toEqual(['token:codigo-simulado', 'revoke:gho_simulado'])

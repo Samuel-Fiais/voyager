@@ -25,7 +25,7 @@ export function WorkspaceSwitcher({ onAdd }: { onAdd: () => void }) {
 
   if (!active) return null
   return (
-    <div className="relative min-w-0" ref={ref}>
+    <div className="relative min-w-0 shrink" ref={ref}>
       <button
         className="flex max-w-full min-w-0 items-baseline gap-2 border border-transparent px-2 py-1 hover:border-line"
         onClick={() => setOpen((o) => !o)}
