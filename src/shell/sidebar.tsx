@@ -4,10 +4,12 @@ import { cn } from '@/lib/utils'
 import { attention, clientSummaries, projectSummaries } from '@/vault/derived'
 import { statusLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
+import { listViews } from '@/views/custom/view-def'
+import { ViewDialog } from '@/views/custom/view-dialog'
 import { useWorkspace } from '@/workspace/workspace-context'
 import { ViewIcon } from './icons'
 import { MiniArc } from './mini-arc'
-import { notePathOf, noteId, VIEW_LABEL, type NavId } from './nav-ids'
+import { notePathOf, noteId, VIEW_LABEL, viewId, type NavId } from './nav-ids'
 import { useNav } from './nav'
 
 function Heading({ title, count }: { title: string; count?: number }) {
@@ -53,14 +55,16 @@ function NavItem({
 export function Sidebar() {
   const { index } = useVault()
   const { active } = useWorkspace()
-  const { current, open, recent } = useNav()
+  const { current, open, recent, setSidebarOpen } = useNav()
   const [allClients, setAllClients] = useState(false)
+  const [newView, setNewView] = useState(false)
   const data = useMemo(() => {
     if (!index) return null
     return {
       att: attention(index),
       projects: projectSummaries(index),
       clients: clientSummaries(index),
+      views: listViews(index),
     }
   }, [index])
 
@@ -123,6 +127,42 @@ export function Sidebar() {
       </nav>
 
       <div className="-mx-1 grid min-h-0 content-start gap-[26px] overflow-x-hidden overflow-y-auto px-1">
+        <div data-testid="sidebar-views">
+          <div className="flex items-baseline justify-between pb-2.5 text-[11px] font-bold tracking-[0.1em] text-faint uppercase">
+            Views salvas
+            <button
+              className="text-[11.5px] font-medium tracking-normal normal-case hover:text-strong"
+              onClick={() => {
+                setSidebarOpen(false)
+                setNewView(true)
+              }}
+              data-testid="new-view"
+            >
+              + nova
+            </button>
+          </div>
+          {data?.views.map(({ path, view }) => (
+            <button
+              key={path}
+              className={cn(
+                'flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-[13px] text-secondary hover:bg-elevated hover:text-strong',
+                current === viewId(path) &&
+                  'bg-elevated text-strong shadow-[inset_3px_0_0_var(--vy-strong)]',
+              )}
+              onClick={() => open(viewId(path))}
+            >
+              <span className="truncate">{view.title}</span>
+              <span className="ml-auto shrink-0 font-mono text-[10.5px] text-faint">
+                {view.kind}
+              </span>
+            </button>
+          ))}
+          {data && !data.views.length && (
+            <p className="text-[12.5px] text-faint">Views ficam em .voyager/views/.</p>
+          )}
+          {newView && <ViewDialog onClose={() => setNewView(false)} />}
+        </div>
+
         <div>
           <Heading title="Projetos" count={data?.projects.length} />
           {data?.projects.map((p) => {

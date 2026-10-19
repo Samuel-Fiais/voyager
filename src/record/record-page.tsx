@@ -5,6 +5,7 @@ import { NoteEditor } from '@/editor/note-editor'
 import { StatusGlyph } from '@/components/status-glyph'
 import { displayBody } from '@/markdown/note-body'
 import { Markdown, type CodeRenderer } from '@/markdown/markdown'
+import { renderBlocks } from '@/views/custom/blocks'
 import { useNav } from '@/shell/nav'
 import { noteId } from '@/shell/nav-ids'
 import { NoteRow, SectionHeader } from '@/views/common'
@@ -200,7 +201,7 @@ export function RecordPage({ note, renderCode }: { note: Note; renderCode?: Code
         {editing ? (
           <NoteEditor note={note} onDone={() => setEditing(false)} />
         ) : body ? (
-          <Markdown source={body} notePath={note.path} renderCode={renderCode} />
+          <Markdown source={body} notePath={note.path} renderCode={renderCode ?? renderBlocks} />
         ) : (
           <p className="text-faint">Nota sem conteúdo além das propriedades.</p>
         )}
