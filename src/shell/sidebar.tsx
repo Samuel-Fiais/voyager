@@ -100,7 +100,7 @@ export function Sidebar() {
           extra={
             data ? (
               <span className="ml-auto font-mono text-[11px] text-faint">
-                {data.att.review} em revisão
+                {data.att.review} em rev.
               </span>
             ) : null
           }
