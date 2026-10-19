@@ -6,6 +6,8 @@ import { KanbanView } from '@/views/kanban-view'
 import { NoteView } from '@/views/note-view'
 import { PainelView } from '@/views/painel-view'
 import { useVault } from '@/vault/vault-context'
+import { CommitSheet, WriteToast } from '@/write/commit-sheet'
+import { WriterProvider } from '@/write/writer'
 import { useNav } from './nav'
 import { notePathOf, type NavId } from './nav-ids'
 import { Palette } from './palette'
@@ -35,32 +37,36 @@ function CurrentView({ id }: { id: NavId | null }) {
 export function AppShell({ onAddWorkspace }: { onAddWorkspace: () => void }) {
   const { current, sidebarOpen, setSidebarOpen } = useNav()
   return (
-    <div className="grid h-dvh grid-rows-[52px_minmax(0,1fr)] overflow-hidden">
-      <TopBar onAddWorkspace={onAddWorkspace} />
-      <div className="relative grid min-h-0 grid-cols-[minmax(0,1fr)] min-[780px]:grid-cols-[248px_minmax(0,1fr)]">
-        <div
-          className={cn(
-            'absolute inset-y-0 left-0 z-30 w-[min(300px,86%)] -translate-x-full shadow-layer transition-transform duration-200 motion-reduce:transition-none min-[780px]:static min-[780px]:z-auto min-[780px]:w-auto min-[780px]:translate-x-0 min-[780px]:shadow-none',
-            sidebarOpen && 'translate-x-0',
-          )}
-        >
-          <Sidebar />
-        </div>
-        {sidebarOpen && (
-          <button
-            className="absolute inset-0 z-20 bg-black/40 min-[780px]:hidden"
-            aria-label="Fechar navegação"
-            onClick={() => setSidebarOpen(false)}
-          />
-        )}
-        <main className="grid min-h-0 min-w-0 grid-rows-[38px_minmax(0,1fr)]">
-          <Tabs />
-          <div className="min-h-0 overflow-auto" data-testid="view">
-            <CurrentView id={current} />
+    <WriterProvider>
+      <div className="grid h-dvh grid-rows-[52px_minmax(0,1fr)] overflow-hidden">
+        <TopBar onAddWorkspace={onAddWorkspace} />
+        <div className="relative grid min-h-0 grid-cols-[minmax(0,1fr)] min-[780px]:grid-cols-[248px_minmax(0,1fr)]">
+          <div
+            className={cn(
+              'absolute inset-y-0 left-0 z-30 w-[min(300px,86%)] -translate-x-full shadow-layer transition-transform duration-200 motion-reduce:transition-none min-[780px]:static min-[780px]:z-auto min-[780px]:w-auto min-[780px]:translate-x-0 min-[780px]:shadow-none',
+              sidebarOpen && 'translate-x-0',
+            )}
+          >
+            <Sidebar />
           </div>
-        </main>
+          {sidebarOpen && (
+            <button
+              className="absolute inset-0 z-20 bg-black/40 min-[780px]:hidden"
+              aria-label="Fechar navegação"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+          <main className="grid min-h-0 min-w-0 grid-rows-[38px_minmax(0,1fr)]">
+            <Tabs />
+            <div className="min-h-0 overflow-auto" data-testid="view">
+              <CurrentView id={current} />
+            </div>
+          </main>
+        </div>
+        <Palette />
+        <CommitSheet />
+        <WriteToast />
       </div>
-      <Palette />
-    </div>
+    </WriterProvider>
   )
 }

@@ -5,10 +5,14 @@ import { transitionsFrom } from '@/vault/contracts'
 import { statusLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
 import type { Note } from '@/vault/vault-index'
+import { planStatusChange } from '@/write/plan'
+import { reasonLabel, REASON_REQUIRED } from '@/write/status-rules'
+import { useWriter } from '@/write/writer'
 
-/** Menu de status com as transições do contrato do type. Só leitura até o motor de escrita. */
+/** Menu de status com as transições do contrato do type; escolher abre a folha de confirmação. */
 export function StatusMenu({ note }: { note: Note }) {
   const { index } = useVault()
+  const { start } = useWriter()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -61,8 +65,21 @@ export function StatusMenu({ note }: { note: Note }) {
             <button
               key={s}
               role="menuitem"
-              disabled
-              className="grid w-full grid-cols-[16px_minmax(0,1fr)] items-start gap-2.5 px-3 py-[9px] text-left opacity-60"
+              className="grid w-full grid-cols-[16px_minmax(0,1fr)] items-start gap-2.5 px-3 py-[9px] text-left hover:bg-panel"
+              onClick={() => {
+                setOpen(false)
+                const path = note.path
+                start({
+                  makePlan: (idx, reason, actor) => {
+                    const current = idx.notes.get(path)
+                    return current
+                      ? planStatusChange({ index: idx, note: current, to: s, reason, actor })
+                      : null
+                  },
+                  reason: { label: reasonLabel(s), required: REASON_REQUIRED.has(s) },
+                })
+              }}
+              data-status={s}
             >
               <StatusGlyph status={s} size={12} />
               <span>
@@ -71,9 +88,6 @@ export function StatusMenu({ note }: { note: Note }) {
               </span>
             </button>
           ))}
-          <p className="border-t px-3 py-2 text-[11.5px] text-faint">
-            Mudar o status chega com o motor de escrita.
-          </p>
         </div>
       )}
     </div>
