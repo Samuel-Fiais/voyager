@@ -5,6 +5,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { UserMenu } from '@/components/user-menu'
 import { AddWorkspace } from '@/workspace/add-workspace'
 import { SyncControl } from '@/workspace/sync-control'
+import { VaultProvider } from '@/vault/vault-context'
 import { useWorkspace, WorkspaceProvider } from '@/workspace/workspace-context'
 import { WorkspaceSwitcher } from '@/workspace/workspace-switcher'
 import { WorkspaceSummary } from '@/workspace/workspace-summary'
@@ -15,7 +16,9 @@ export function Home() {
   if (!session) return <Login />
   return (
     <WorkspaceProvider>
-      <Shell />
+      <VaultProvider>
+        <Shell />
+      </VaultProvider>
     </WorkspaceProvider>
   )
 }
