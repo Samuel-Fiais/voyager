@@ -3,9 +3,12 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { UserMenu } from '@/components/user-menu'
 import { SyncControl } from '@/workspace/sync-control'
 import { WorkspaceSwitcher } from '@/workspace/workspace-switcher'
-import { useState } from 'react'
-import { NewNoteDialog } from '@/editor/new-note-dialog'
+import { lazy, Suspense, useState } from 'react'
 import { useNav } from './nav'
+
+const NewNoteDialog = lazy(() =>
+  import('@/editor/new-note-dialog').then((m) => ({ default: m.NewNoteDialog })),
+)
 
 export function TopBar({ onAddWorkspace }: { onAddWorkspace: () => void }) {
   const { setSidebarOpen, sidebarOpen, setPaletteOpen } = useNav()
@@ -47,7 +50,11 @@ export function TopBar({ onAddWorkspace }: { onAddWorkspace: () => void }) {
       >
         +<span className="hidden lg:inline">Nova</span>
       </button>
-      {creating && <NewNoteDialog onClose={() => setCreating(false)} />}
+      {creating && (
+        <Suspense fallback={null}>
+          <NewNoteDialog onClose={() => setCreating(false)} />
+        </Suspense>
+      )}
       <div className="ml-auto flex shrink-0 items-center gap-1">
         <SyncControl />
         <span className="hidden sm:block">

@@ -127,5 +127,9 @@ export async function logout(
     }
   }
   localStorage.removeItem(SESSION_KEY)
+  // abas e recentes por workspace guardam caminhos de notas; só o tema fica
+  for (const key of Object.keys(localStorage)) {
+    if (key.startsWith('voyager.') && key !== 'voyager.theme') localStorage.removeItem(key)
+  }
   return { revoked }
 }
