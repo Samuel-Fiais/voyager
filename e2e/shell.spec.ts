@@ -12,7 +12,7 @@ test('navega por sidebar, abas e busca sem estourar a largura', async ({ page },
 
   const sidebar = page.getByTestId('sidebar')
   const openSidebar = async () => {
-    if (mobile) await page.getByTestId('menu-button').click()
+    if (mobile) await page.getByTestId('bottom-vault').click()
   }
 
   // Projeto pela sidebar
@@ -21,7 +21,7 @@ test('navega por sidebar, abas e busca sem estourar a largura', async ({ page },
   await expect(page.getByTestId('note-header')).toContainText('AC-P001')
 
   // Busca por título sem acento e por código
-  await page.getByTestId('search-button').click()
+  await page.getByTestId(mobile ? 'bottom-buscar' : 'search-button').click()
   await page.getByTestId('palette-input').fill('catalogo')
   await expect(page.getByTestId('palette-list')).toContainText('AC-T002')
   await page.keyboard.press('Enter')
@@ -32,11 +32,15 @@ test('navega por sidebar, abas e busca sem estourar a largura', async ({ page },
   await page.keyboard.press('Enter')
   await expect(page.getByTestId('note-header')).toContainText('AC-D001')
 
-  // Abas: três notas + painel; fechar a atual cai na vizinha
+  // Abas (desktop): três notas + painel; fechar a atual cai na vizinha. No celular, um item por tela.
   const tabs = page.getByTestId('tabs').getByRole('tab')
-  await expect(tabs).toHaveCount(4)
-  await page.getByRole('button', { name: 'Fechar aba Portal de pedidos' }).last().click()
-  await expect(tabs).toHaveCount(3)
+  if (!mobile) {
+    await expect(tabs).toHaveCount(4)
+    await page.getByRole('button', { name: 'Fechar aba Portal de pedidos' }).last().click()
+    await expect(tabs).toHaveCount(3)
+  } else {
+    await expect(page.getByTestId('mobile-bar')).toContainText('AC-D001 · 4/4')
+  }
 
   // Views
   await openSidebar()
@@ -51,15 +55,17 @@ test('navega por sidebar, abas e busca sem estourar a largura', async ({ page },
   await expect(page.getByTestId('files')).toContainText('Projetos')
   await page.screenshot({ path: info.outputPath('arquivos.png') })
 
-  // Fechar todas as abas mostra o estado vazio
-  while ((await tabs.count()) > 0) {
-    await page
-      .getByTestId('tabs')
-      .getByRole('button', { name: /^Fechar aba/ })
-      .first()
-      .click()
+  // Fechar todas as abas mostra o estado vazio (desktop; no celular não há abas)
+  if (!mobile) {
+    while ((await tabs.count()) > 0) {
+      await page
+        .getByTestId('tabs')
+        .getByRole('button', { name: /^Fechar aba/ })
+        .first()
+        .click()
+    }
+    await expect(page.getByTestId('blank')).toBeVisible()
   }
-  await expect(page.getByTestId('blank')).toBeVisible()
 
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

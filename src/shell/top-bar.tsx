@@ -13,7 +13,7 @@ export function TopBar({ onAddWorkspace }: { onAddWorkspace: () => void }) {
   return (
     <header className="flex h-[52px] min-w-0 items-center gap-2 border-b bg-panel px-2.5 md:gap-3.5 md:px-4">
       <button
-        className="grid size-8 shrink-0 place-items-center border text-sm hover:bg-elevated min-[780px]:hidden"
+        className="hidden size-8 shrink-0 place-items-center border text-sm hover:bg-elevated"
         aria-label="Abrir navegação"
         aria-expanded={sidebarOpen}
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -24,9 +24,12 @@ export function TopBar({ onAddWorkspace }: { onAddWorkspace: () => void }) {
       <span className="hidden sm:block">
         <Brand />
       </span>
+      <span className="sm:hidden">
+        <Brand size={18} />
+      </span>
       <WorkspaceSwitcher onAdd={onAddWorkspace} />
       <button
-        className="flex shrink-0 items-center gap-2.5 border px-2.5 py-[7px] text-left text-[13px] text-faint hover:border-faint md:max-w-[420px] md:min-w-0 md:flex-1 md:shrink"
+        className="hidden shrink-0 items-center gap-2.5 border px-2.5 py-[7px] text-left text-[13px] text-faint hover:border-faint min-[780px]:flex md:max-w-[420px] md:min-w-0 md:flex-1 md:shrink"
         onClick={() => setPaletteOpen(true)}
         aria-label="Buscar"
         data-testid="search-button"
