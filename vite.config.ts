@@ -3,9 +3,11 @@ import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { devApi } from './server/dev-api.js'
+import { SECURITY_HEADERS } from './server/security-headers.js'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), devApi()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
@@ -18,6 +20,7 @@ export default defineConfig({
     allowedHosts: ['.development.ngtools.com.br'],
   },
   preview: {
+    headers: SECURITY_HEADERS,
     host: '0.0.0.0',
     port: 7055,
     strictPort: true,
@@ -26,7 +29,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
     css: false,
   },
 })
