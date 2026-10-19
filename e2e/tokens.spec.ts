@@ -10,7 +10,7 @@ for (const scheme of ['dark', 'light'] as const) {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: scheme })
-    await page.goto('/')
+    await page.goto('/design')
     await expect(page.getByRole('heading', { name: 'Tokens de design' })).toBeVisible()
 
     const body = await page.evaluate(() => getComputedStyle(document.body).backgroundColor)
@@ -32,7 +32,7 @@ for (const scheme of ['dark', 'light'] as const) {
 
 test('o botão de tema troca e guarda a escolha', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' })
-  await page.goto('/')
+  await page.goto('/design')
   await page.getByTestId('theme-toggle').click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(

@@ -6,7 +6,7 @@ Projeto VO-P001 (plano VO-IP001). Padrão de interface: VO-DS001. Arquitetura: V
 
 ## Desenvolvimento
 
-Requer Node 22 (`.nvmrc`).
+Requer Node 22 (`.nvmrc`). Copie `.env.example` para `.env.local` e preencha o secret do OAuth App (ver `docs/oauth.md`).
 
 ```bash
 npm install
@@ -21,6 +21,7 @@ npm run dev          # 0.0.0.0:7054 → https://7054.development.ngtools.com.br
 | `npm run format` / `format:check` | Prettier (com ordenação das classes Tailwind).                                                                                        |
 | `npm run typecheck`               | `tsc -b`.                                                                                                                             |
 | `npm test`                        | Vitest (unidade, jsdom).                                                                                                              |
+| `npm run check:secrets`           | Compila com um secret sentinela e falha se ele aparecer em `dist/`.                                                                   |
 | `npm run test:e2e`                | Playwright em desktop e celular (390px), sobre o build servido em `0.0.0.0:7055`. Na primeira vez: `npx playwright install chromium`. |
 
 ## Portas
