@@ -17,7 +17,7 @@ export function BarList({ bars, unit, testId }: { bars: Bar[]; unit: string; tes
   const [hot, setHot] = useState<string | null>(null)
   const max = Math.max(1, ...bars.map((b) => b.value))
   const total = bars.reduce((a, b) => a + b.value, 0)
-  if (!bars.length) return <p className="py-3 text-[12.5px] text-faint">Sem dados.</p>
+  if (!bars.length) return <p className="py-3 text-small text-faint">Sem dados.</p>
   return (
     <div className="grid gap-2.5 pt-2.5" data-testid={testId} role="list">
       {bars.map((b) => (
@@ -26,7 +26,7 @@ export function BarList({ bars, unit, testId }: { bars: Bar[]; unit: string; tes
           role="listitem"
           tabIndex={0}
           className={cn(
-            'relative grid grid-cols-[minmax(0,140px)_minmax(0,1fr)_52px] items-center gap-3 text-[13px] outline-none sm:grid-cols-[minmax(0,170px)_minmax(0,1fr)_56px]',
+            'relative grid grid-cols-[minmax(0,140px)_minmax(0,1fr)_52px] items-center gap-3 text-ui outline-none sm:grid-cols-[minmax(0,170px)_minmax(0,1fr)_56px]',
             b.onClick && 'cursor-pointer',
           )}
           onMouseEnter={() => setHot(b.key)}
@@ -38,7 +38,7 @@ export function BarList({ bars, unit, testId }: { bars: Bar[]; unit: string; tes
           aria-label={`${b.label}: ${b.value} ${unit}${b.partial ? ' (parcial)' : ''}`}
           data-bar={b.key}
         >
-          <span className="truncate font-mono text-[11.5px] text-secondary">{b.label}</span>
+          <span className="truncate font-mono text-small text-secondary">{b.label}</span>
           <span className="relative h-2.5 bg-elevated">
             <span
               className={cn('absolute inset-y-0 left-0', hot === b.key ? 'bg-nasa' : 'bg-strong')}
@@ -53,13 +53,13 @@ export function BarList({ bars, unit, testId }: { bars: Bar[]; unit: string; tes
               }}
             />
           </span>
-          <span className="text-right font-mono text-[11.5px] text-strong tabular-nums">
+          <span className="text-right font-mono text-small text-strong tabular-nums">
             {b.value}
           </span>
           {hot === b.key && (
             <span
               role="tooltip"
-              className="pointer-events-none absolute bottom-full left-1/3 z-20 mb-1.5 border border-strong bg-elevated px-2.5 py-1.5 text-[12px] whitespace-nowrap shadow-layer"
+              className="pointer-events-none absolute bottom-full left-1/3 z-20 mb-1.5 border border-strong bg-elevated px-2.5 py-1.5 text-small whitespace-nowrap shadow-layer"
             >
               <b className="font-mono text-strong">{b.value}</b> {unit} · {b.label}
               {total ? ` · ${Math.round((b.value / total) * 100)}%` : ''}

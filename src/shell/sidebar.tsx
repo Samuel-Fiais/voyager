@@ -11,13 +11,14 @@ import { ViewIcon } from './icons'
 import { MiniArc } from './mini-arc'
 import { notePathOf, noteId, VIEW_LABEL, viewId, type NavId } from './nav-ids'
 import { useNav } from './nav'
+import { Icon } from '@/components/icon'
 
 function Heading({ title, count }: { title: string; count?: number }) {
   return (
-    <div className="flex items-baseline justify-between pb-2.5 text-[11px] font-bold tracking-[0.1em] text-faint uppercase">
+    <div className="flex items-baseline justify-between pb-2.5 text-meta font-bold tracking-[0.1em] text-faint uppercase">
       {title}
       {count !== undefined && (
-        <small className="text-[11.5px] font-medium tracking-normal normal-case">{count}</small>
+        <small className="text-small font-medium tracking-normal normal-case">{count}</small>
       )}
     </div>
   )
@@ -81,7 +82,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-[22px] border-r bg-panel px-3.5 pt-[18px] pb-3"
+      className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-[22px] border-r bg-panel px-3.5 pt-[18px] pb-3 text-ui"
       data-testid="sidebar"
     >
       <nav className="grid gap-0.5" aria-label="Views">
@@ -90,8 +91,8 @@ export function Sidebar() {
           icon="painel"
           extra={
             data && data.att.blocked > 0 ? (
-              <span className="font-mono text-[11px] text-nasa" title="tasks bloqueadas">
-                {data.att.blocked} bloq.
+              <span className="text-meta text-nasa" title="tasks bloqueadas">
+                <span className="font-mono">{data.att.blocked}</span> bloq.
               </span>
             ) : null
           }
@@ -103,8 +104,8 @@ export function Sidebar() {
           icon="kanban"
           extra={
             data ? (
-              <span className="ml-auto font-mono text-[11px] text-faint">
-                {data.att.review} em rev.
+              <span className="ml-auto text-meta text-faint">
+                <span className="font-mono">{data.att.review}</span> em rev.
               </span>
             ) : null
           }
@@ -116,8 +117,9 @@ export function Sidebar() {
           icon="demandas"
           extra={
             data ? (
-              <span className="font-mono text-[11px] text-faint">
-                {data.att.openDemands.length} aberta{data.att.openDemands.length === 1 ? '' : 's'}
+              <span className="text-meta text-faint">
+                <span className="font-mono">{data.att.openDemands.length}</span> aberta
+                {data.att.openDemands.length === 1 ? '' : 's'}
               </span>
             ) : null
           }
@@ -128,37 +130,36 @@ export function Sidebar() {
 
       <div className="-mx-1 grid min-h-0 content-start gap-[26px] overflow-x-hidden overflow-y-auto px-1">
         <div data-testid="sidebar-views">
-          <div className="flex items-baseline justify-between pb-2.5 text-[11px] font-bold tracking-[0.1em] text-faint uppercase">
+          <div className="flex items-baseline justify-between pb-2.5 text-meta font-bold tracking-[0.1em] text-faint uppercase">
             Views salvas
             <button
-              className="text-[11.5px] font-medium tracking-normal normal-case hover:text-strong"
+              className="flex items-center gap-1 text-small font-medium tracking-normal normal-case hover:text-strong"
               onClick={() => {
                 setSidebarOpen(false)
                 setNewView(true)
               }}
               data-testid="new-view"
             >
-              + nova
+              <Icon name="plus" size={11} />
+              nova
             </button>
           </div>
           {data?.views.map(({ path, view }) => (
             <button
               key={path}
               className={cn(
-                'flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-[13px] text-secondary hover:bg-elevated hover:text-strong',
+                'flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-ui text-secondary hover:bg-elevated hover:text-strong',
                 current === viewId(path) &&
                   'bg-elevated text-strong shadow-[inset_3px_0_0_var(--vy-strong)]',
               )}
               onClick={() => open(viewId(path))}
             >
               <span className="truncate">{view.title}</span>
-              <span className="ml-auto shrink-0 font-mono text-[10.5px] text-faint">
-                {view.kind}
-              </span>
+              <span className="ml-auto shrink-0 font-mono text-meta text-faint">{view.kind}</span>
             </button>
           ))}
           {data && !data.views.length && (
-            <p className="text-[12.5px] text-faint">Views ficam em .voyager/views/.</p>
+            <p className="text-small text-faint">Views ficam em .voyager/views/.</p>
           )}
           {newView && <ViewDialog onClose={() => setNewView(false)} />}
         </div>
@@ -183,16 +184,14 @@ export function Sidebar() {
                 data-testid="sidebar-project"
               >
                 <span className="flex min-w-0 items-baseline gap-2">
-                  <span className="shrink-0 font-mono text-[11px] text-secondary">
-                    {p.note.code}
-                  </span>
-                  <span className="truncate text-[13.5px]">{p.note.title}</span>
-                  <span className="ml-auto shrink-0 font-mono text-[11px] text-faint">
+                  <span className="shrink-0 font-mono text-meta text-secondary">{p.note.code}</span>
+                  <span className="truncate text-ui">{p.note.title}</span>
+                  <span className="ml-auto shrink-0 font-mono text-meta text-faint">
                     {p.done}/{p.tasks.length}
                   </span>
                 </span>
                 <MiniArc tasks={p.tasks} />
-                <span className="flex flex-wrap items-center gap-x-2 text-[11.5px] text-faint">
+                <span className="flex flex-wrap items-center gap-x-2 text-small text-faint">
                   {note.join(' · ')}
                   {p.blocked > 0 && (
                     <span className="text-nasa">
@@ -217,7 +216,7 @@ export function Sidebar() {
                 <button
                   key={c.note.path}
                   className={cn(
-                    'min-w-[38px] border px-2 py-[5px] text-center font-mono text-[11.5px] text-secondary hover:border-faint hover:text-strong',
+                    'min-w-[38px] border px-2 py-[5px] text-center font-mono text-small text-secondary hover:border-faint hover:text-strong',
                     current === id && 'border-strong bg-elevated text-strong',
                   )}
                   title={`${c.note.code} · ${c.note.title}`}
@@ -229,7 +228,7 @@ export function Sidebar() {
             })}
             {rest.length > 0 && (
               <button
-                className="min-w-[38px] border px-2 py-[5px] text-[12px] text-secondary hover:border-faint"
+                className="min-w-[38px] border px-2 py-[5px] text-small text-secondary hover:border-faint"
                 onClick={() => setAllClients((v) => !v)}
                 aria-expanded={allClients}
               >
@@ -248,19 +247,19 @@ export function Sidebar() {
                 <button
                   key={n.path}
                   className={cn(
-                    'grid w-full grid-cols-[12px_auto_minmax(0,1fr)] items-center gap-2 px-2.5 py-1.5 text-left text-[13px] text-secondary hover:bg-elevated hover:text-strong',
+                    'grid w-full grid-cols-[12px_auto_minmax(0,1fr)] items-center gap-2 px-2.5 py-1.5 text-left text-ui text-secondary hover:bg-elevated hover:text-strong',
                     current === id && 'bg-elevated text-strong',
                   )}
                   onClick={() => open(id)}
                 >
                   <StatusGlyph status={n.status} size={10} />
-                  <span className="font-mono text-[11px] text-strong">{n.code ?? ''}</span>
+                  <span className="font-mono text-meta text-strong">{n.code ?? ''}</span>
                   <span className="truncate">{n.title}</span>
                 </button>
               )
             })
           ) : (
-            <p className="text-[12.5px] text-faint">O que você abrir aparece aqui.</p>
+            <p className="text-small text-faint">O que você abrir aparece aqui.</p>
           )}
         </div>
       </div>
@@ -269,7 +268,7 @@ export function Sidebar() {
         <NavItem id="arquivos" icon="arquivos">
           {VIEW_LABEL.arquivos}
         </NavItem>
-        <div className="px-2.5 text-[11.5px] text-faint">
+        <div className="px-2.5 text-small text-faint">
           Último commit lido{' '}
           <span className="font-mono text-secondary">{active?.lastCommit?.slice(0, 7) ?? '—'}</span>
         </div>

@@ -127,7 +127,7 @@ export function NewNoteDialog({
       )}
       <Field label="Pasta">
         <input
-          className={`${inputClass} font-mono text-[12.5px]`}
+          className={`${inputClass} font-mono text-small`}
           value={
             folder ??
             (suggested.ownFolder
@@ -139,13 +139,13 @@ export function NewNoteDialog({
         />
       </Field>
       <div
-        className="border bg-bg px-3 py-2 font-mono text-[12px] text-secondary"
+        className="border bg-bg px-3 py-2 font-mono text-small text-secondary"
         data-testid="new-preview"
       >
         <span className="text-strong">{preview.code}</span> → {preview.path}
       </div>
       {name.trim() && preview.errors.length > 0 && (
-        <ul className="border-l-[3px] border-nasa bg-bg px-3 py-2 text-[13px] text-secondary">
+        <ul className="border-l-[3px] border-nasa bg-bg px-3 py-2 text-ui text-secondary">
           {preview.errors.slice(0, 4).map((e) => (
             <li key={e}>{e}</li>
           ))}

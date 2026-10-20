@@ -55,7 +55,7 @@ describe('syncWorkspace', () => {
     expect(paths).toContain('Clientes/C001 - Acme.md')
     const png = files.find((f) => f.path.endsWith('login.png'))!
     expect(png.kind).toBe('binary')
-    expect(png.data?.size).toBeGreaterThan(0)
+    expect(png.size).toBeGreaterThan(0)
     const demand = files.find((f) => f.path.startsWith('Demandas/Acme/AC-D001'))!
     expect(demand.kind).toBe('text')
     expect(demand.text).toContain('Portal de pedidos')

@@ -1,4 +1,4 @@
-// Rótulos em português dos status e types mais comuns; o valor cru aparece quando não há rótulo.
+// Rótulos de apresentação; os valores canônicos do vault permanecem intactos.
 
 const STATUS: Record<string, string> = {
   planned: 'Planejada',
@@ -27,6 +27,30 @@ const STATUS: Record<string, string> = {
   rejected: 'Rejeitada',
   recorded: 'Registrado',
   archived: 'Arquivado',
+  sent: 'Enviada',
+  expired: 'Expirada',
+  reported: 'Relatado',
+  investigating: 'Em investigação',
+  confirmed: 'Confirmado',
+  needs_info: 'Aguarda informações',
+  resolved: 'Resolvido',
+  duplicate: 'Duplicado',
+  not_a_bug: 'Não é defeito',
+  cannot_reproduce: 'Não reproduzido',
+  reopened: 'Reaberto',
+  retired: 'Desativado',
+  deprecated: 'Obsoleto',
+  open: 'Aberto',
+  follow_up_pending: 'Encaminhamentos pendentes',
+  delivered: 'Entregue',
+  passed: 'Aprovado',
+  failed: 'Reprovado',
+  not_applicable: 'Não se aplica',
+  not_created: 'Não criado',
+  merged: 'Integrado',
+  pending: 'Pendente',
+  not_assessed: 'Não avaliada',
+  updated: 'Atualizada',
 }
 
 const TYPE: Record<string, string> = {
@@ -54,9 +78,25 @@ const TYPE: Record<string, string> = {
   business_rule: 'Regra',
 }
 
-export function statusLabel(status: string | null | undefined) {
-  if (!status) return '—'
-  return STATUS[status] ?? status
+export function statusLabel(status: unknown): string {
+  if (
+    status === null ||
+    status === undefined ||
+    status === '' ||
+    status === '—' ||
+    status === 'None'
+  )
+    return '—'
+  const value = String(status)
+  // Status novos continuam identificáveis, sem snake_case na apresentação.
+  return (
+    STATUS[value] ??
+    value.replace(/[_-]+/g, ' ').replace(/^./u, (c) => c.toLocaleUpperCase('pt-BR'))
+  )
+}
+
+export function isStatusField(field: string): boolean {
+  return field === 'status' || field.endsWith('_status')
 }
 
 export function typeLabel(type: string | null | undefined) {
@@ -74,18 +114,28 @@ export function glyphShape(status: string | null | undefined): GlyphShape {
     case 'active':
     case 'accepted':
     case 'approved':
+    case 'confirmed':
+    case 'open':
+    case 'reopened':
       return 'ring'
     case 'ready':
     case 'planning':
     case 'proposed':
     case 'draft':
+    case 'planned':
+    case 'reported':
+    case 'sent':
       return 'ring-faint'
     case 'changes_requested':
     case 'needs_clarification':
     case 'on_hold':
     case 'paused':
+    case 'needs_info':
+    case 'follow_up_pending':
+    case 'pending':
       return 'dashed'
     case 'in_progress':
+    case 'investigating':
       return 'half'
     case 'done':
     case 'completed':
@@ -93,12 +143,24 @@ export function glyphShape(status: string | null | undefined): GlyphShape {
     case 'closed':
     case 'superseded':
     case 'archived':
+    case 'resolved':
+    case 'delivered':
+    case 'passed':
+    case 'merged':
+    case 'updated':
       return 'full-faint'
     case 'blocked':
       return 'red'
     case 'cancelled':
     case 'declined':
     case 'rejected':
+    case 'expired':
+    case 'retired':
+    case 'deprecated':
+    case 'duplicate':
+    case 'not_a_bug':
+    case 'cannot_reproduce':
+    case 'failed':
       return 'struck'
     default:
       return 'dot'

@@ -36,8 +36,8 @@ function MetaLink({ path }: { path: string | null }) {
 
 function Tag({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <span className="inline-flex max-w-full items-center gap-1.5 border px-[9px] py-1 text-[12.5px] text-secondary">
-      <span className="font-mono text-[11px] text-strong">{label}</span>
+    <span className="inline-flex max-w-full items-center gap-1.5 border px-[9px] py-1 text-small text-secondary">
+      <span className="font-mono text-meta text-strong">{label}</span>
       <span className="truncate">{children}</span>
     </span>
   )
@@ -51,35 +51,30 @@ export function RecordHeader({ note, actions }: { note: Note; actions?: ReactNod
       className="grid grid-cols-[minmax(0,1fr)] gap-1.5 pt-3.5 rule-record"
       data-testid="note-header"
     >
-      <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[11.5px] font-semibold tracking-[0.08em] text-faint uppercase">
+      <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-small font-semibold tracking-[0.08em] text-faint uppercase">
         <span>{typeLabel(note.type)}</span>
         {note.type !== 'company' && note.type !== 'individual' && <MetaLink path={note.client} />}
         {note.project && note.project !== note.path && <MetaLink path={note.project} />}
         {created && <span>criado em {created}</span>}
       </div>
       {note.code && (
-        <div className="font-mono text-[42px] leading-[0.95] font-extrabold tracking-tight break-all text-strong sm:text-code">
+        <div className="font-mono text-stat leading-[0.95] font-extrabold tracking-tight break-all text-strong sm:text-code">
           {note.code}
         </div>
       )}
-      <h1 className="mt-1.5 max-w-[38ch] text-title text-balance text-strong">{note.title}</h1>
+      <h1 className="mt-1.5 text-title text-balance text-strong">{note.title}</h1>
       <div className="mt-3.5 flex flex-wrap items-center gap-2">
         {note.status && <StatusMenu note={note} />}
         {note.data.routing != null && <Tag label="routing">{String(note.data.routing)}</Tag>}
         {note.type === 'task' && (
           <Tag label="PR">
             {pr ? (
-              <a
-                href={pr}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline underline-offset-2"
-              >
+              <a href={pr} target="_blank" rel="noopener noreferrer" className="link-external link">
                 {String(note.data.pull_request ?? 'PR')} ·{' '}
-                {String(note.data.pull_request_status ?? '')}
+                {statusLabel(note.data.pull_request_status)}
               </a>
             ) : (
-              String(note.data.pull_request_status ?? '—')
+              statusLabel(note.data.pull_request_status)
             )}
           </Tag>
         )}
@@ -142,7 +137,7 @@ function ProjectSection({ note }: { note: Note }) {
               aside={group.length}
             />
             {group.map((t) => (
-              <NoteRow key={t.path} note={t} aside={String(t.data.pull_request_status ?? '')} />
+              <NoteRow key={t.path} note={t} aside={statusLabel(t.data.pull_request_status)} />
             ))}
           </div>
         )
@@ -173,7 +168,7 @@ function ClientSection({ note }: { note: Note }) {
         <NoteRow key={n.path} note={n} aside={typeLabel(n.type).toLowerCase()} />
       ))}
       {!related.length && (
-        <p className="py-3 text-[12.5px] text-faint">Nenhuma demanda ou projeto deste cliente.</p>
+        <p className="py-3 text-small text-faint">Nenhuma demanda ou projeto deste cliente.</p>
       )}
     </div>
   )
@@ -196,9 +191,9 @@ export function RecordPage({ note, renderCode }: { note: Note; renderCode?: Code
       </>
     ) : null
   return (
-    <div className="grid min-h-full grid-cols-[minmax(0,1fr)] min-[1100px]:grid-cols-[minmax(0,1fr)_310px]">
+    <div className="grid min-h-full w-full min-w-0 grid-cols-[minmax(0,1fr)] min-[1100px]:grid-cols-[minmax(0,1fr)_310px]">
       <article
-        className="grid content-start gap-7 px-4 pt-6 pb-16 sm:px-12 sm:pt-8"
+        className="grid w-full min-w-0 content-start gap-7 px-4 pt-6 pb-16 sm:px-8 sm:pt-8 lg:px-10"
         data-testid="record"
       >
         <RecordHeader note={note} actions={actions} />
@@ -207,7 +202,12 @@ export function RecordPage({ note, renderCode }: { note: Note; renderCode?: Code
         {editing ? (
           <NoteEditor note={note} onDone={() => setEditing(false)} />
         ) : body ? (
-          <Markdown source={body} notePath={note.path} renderCode={renderCode ?? renderBlocks} />
+          <Markdown
+            source={body}
+            notePath={note.path}
+            renderCode={renderCode ?? renderBlocks}
+            className="w-full max-w-none"
+          />
         ) : (
           <p className="text-faint">Nota sem conteúdo além das propriedades.</p>
         )}

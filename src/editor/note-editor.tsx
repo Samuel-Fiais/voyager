@@ -70,11 +70,11 @@ export function NoteEditor({ note, onDone }: { note: Note; onDone: () => void })
           label={`Conteúdo de ${note.code ?? note.title}`}
         />
       </Suspense>
-      <small className="text-[12px] text-faint">
+      <small className="text-small text-faint">
         O frontmatter e a seção ## Auditoria não aparecem aqui; o Voyager cuida deles ao salvar.
       </small>
       {attachments.length > 0 && (
-        <ul className="text-[12.5px] text-secondary" data-testid="attachments">
+        <ul className="text-small text-secondary" data-testid="attachments">
           {attachments.map((a) => (
             <li key={a.name}>
               <span className="font-mono">{attachmentPath(note, a.name)}</span> ·{' '}

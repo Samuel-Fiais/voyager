@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { StatusValue } from '@/components/status-value'
 import { statusesOf } from './contracts'
 import { useVault } from './vault-context'
 import { countByTypeAndStatus } from './vault-index'
@@ -49,7 +50,7 @@ export function VaultHealth() {
                         }
                         title={allowed?.has(s) ? undefined : 'fora do contrato'}
                       >
-                        <span className="font-mono">{s}</span> {n}
+                        <StatusValue status={s} /> <span className="font-mono">{n}</span>
                       </span>
                     ))}
                   </td>

@@ -97,7 +97,7 @@ function PaletteDialog() {
       >
         <input
           ref={input}
-          className="w-full border-b-2 border-strong bg-transparent px-[18px] py-4 text-[17px] text-strong outline-none placeholder:text-faint"
+          className="w-full border-b-2 border-strong bg-transparent px-[18px] py-4 text-body text-strong outline-none placeholder:text-faint"
           placeholder="Buscar por código ou título"
           value={q}
           onChange={(e) => {
@@ -133,16 +133,16 @@ function PaletteDialog() {
                   role="option"
                   aria-selected={i === sel}
                   className={cn(
-                    'grid w-full grid-cols-[16px_86px_minmax(0,1fr)_auto] items-center gap-3 px-[18px] py-[9px] text-left text-sm',
+                    'grid w-full grid-cols-[16px_86px_minmax(0,1fr)_auto] items-center gap-3 px-[18px] py-[9px] text-left text-ui',
                     i === sel && 'bg-panel shadow-[inset_3px_0_0_var(--vy-nasa)]',
                   )}
                   onMouseEnter={() => setIdx(i)}
                   onClick={() => open(x.id)}
                 >
                   <StatusGlyph status={x.status} size={11} />
-                  <span className="truncate font-mono text-[11.5px] text-secondary">{x.code}</span>
+                  <span className="truncate font-mono text-small text-secondary">{x.code}</span>
                   <span className="truncate text-strong">{x.title}</span>
-                  <small className="text-[11px] font-semibold tracking-[0.06em] text-faint uppercase">
+                  <small className="text-meta font-semibold tracking-[0.06em] text-faint uppercase">
                     {x.kind}
                   </small>
                 </button>
@@ -150,9 +150,9 @@ function PaletteDialog() {
             ))}
           </ul>
         ) : (
-          <div className="p-[18px] text-[13.5px] text-faint">Nada encontrado para "{q}".</div>
+          <div className="p-[18px] text-ui text-faint">Nada encontrado para "{q}".</div>
         )}
-        <div className="flex gap-4 border-t px-[18px] py-[9px] text-[11.5px] text-faint">
+        <div className="flex gap-4 border-t px-[18px] py-[9px] text-small text-faint">
           <span>↑↓ navegar</span>
           <span>Enter abrir</span>
           <span>Esc fechar</span>

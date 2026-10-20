@@ -15,10 +15,10 @@ export function Block({ lang, code }: { lang: keyof typeof KINDS; code: string }
   if (!parsed.ok) {
     return (
       <div className="border border-nasa bg-panel" data-testid="block-error">
-        <p className="border-b px-3 py-1.5 text-[12px] text-nasa">
+        <p className="border-b px-3 py-1.5 text-small text-nasa">
           Bloco {lang} inválido: {parsed.error}
         </p>
-        <pre className="overflow-x-auto p-3 font-mono text-[12px] text-secondary">{code}</pre>
+        <pre className="overflow-x-auto p-3 font-mono text-small text-secondary">{code}</pre>
       </div>
     )
   }

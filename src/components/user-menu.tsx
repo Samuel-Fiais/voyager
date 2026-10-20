@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef, useState } from 'react'
 import { useSession } from '@/auth/session-context'
+import { Icon } from '@/components/icon'
 import { useTheme } from '@/theme/use-theme'
 
 export function UserMenu() {
@@ -44,9 +45,9 @@ export function UserMenu() {
   }
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative flex h-8 items-center" ref={ref}>
       <button
-        className="grid size-[30px] place-items-center overflow-hidden bg-strong text-[11px] font-extrabold text-bg"
+        className="grid size-8 place-items-center overflow-hidden bg-strong text-meta font-extrabold text-bg"
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
@@ -68,7 +69,7 @@ export function UserMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute top-full right-0 z-40 mt-1 w-56 border bg-elevated py-1 shadow-layer"
+          className="absolute top-full right-0 z-40 mt-1 w-56 border bg-elevated py-1 text-ui shadow-layer"
         >
           <p className="px-3 pt-2 pb-1 label-caps">Conta</p>
           <p className="truncate px-3 pb-2 text-strong" data-testid="user-login">
@@ -76,10 +77,11 @@ export function UserMenu() {
           </p>
           <button
             role="menuitem"
-            className="w-full border-t px-3 py-2 text-left hover:bg-panel"
+            className="flex w-full items-center justify-between gap-2 border-t px-3 py-2 text-left hover:bg-panel"
             onClick={toggle}
           >
-            {theme === 'dark' ? 'Usar tema claro ☀' : 'Usar tema escuro ☾'}
+            {theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro'}
+            <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
           </button>
           <button
             role="menuitem"

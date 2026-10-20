@@ -8,7 +8,7 @@ export function BlankView() {
       className="grid h-full content-center justify-items-center gap-3.5 p-10 text-center text-faint"
       data-testid="blank"
     >
-      <b className="text-[15px] text-strong">Nenhuma aba aberta</b>
+      <b className="text-body text-strong">Nenhuma aba aberta</b>
       <span>Abra algo pela sidebar ou pela busca.</span>
       <div className="flex flex-wrap justify-center gap-2">
         <Button onClick={() => open('painel')}>Painel</Button>

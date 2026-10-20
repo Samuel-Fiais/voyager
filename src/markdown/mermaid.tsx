@@ -47,7 +47,7 @@ export function Mermaid({ code }: { code: string }) {
           ? `Mermaid inválido: ${current.error.split('\n')[0]}`
           : 'Desenhando o diagrama…'}
       </p>
-      <pre className="overflow-x-auto p-3 font-mono text-[12px] text-secondary">{code}</pre>
+      <pre className="overflow-x-auto p-3 font-mono text-small text-secondary">{code}</pre>
     </div>
   )
 }

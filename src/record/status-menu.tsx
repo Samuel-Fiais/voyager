@@ -6,6 +6,7 @@ import { statusLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
 import type { Note } from '@/vault/vault-index'
 import { useStartStatusChange } from '@/write/start-status'
+import { Icon } from '@/components/icon'
 
 /**
  * Menu de status com as transições do contrato do type; escolher abre a folha de confirmação.
@@ -62,7 +63,7 @@ export function StatusMenu({
     >
       {variant === 'more' ? (
         <button
-          className="px-1 text-[15px] leading-none text-faint hover:text-strong focus-visible:text-strong"
+          className="grid place-items-center px-1 text-faint hover:text-strong focus-visible:text-strong"
           onClick={(e) => {
             e.stopPropagation()
             setOpen((o) => !o)
@@ -72,12 +73,12 @@ export function StatusMenu({
           aria-label={`Mudar o status de ${note.code}`}
           data-testid="card-more"
         >
-          ⋯
+          <Icon name="more" />
         </button>
       ) : (
         <button
           className={cn(
-            'inline-flex items-center gap-2 border px-2.5 py-[5px] text-[12px] font-semibold tracking-[0.04em] hover:bg-elevated',
+            'inline-flex items-center gap-2 border px-2.5 py-[5px] text-small font-semibold tracking-[0.04em] hover:bg-elevated',
             note.status === 'blocked' && 'border-nasa text-nasa',
           )}
           onClick={() => setOpen((o) => !o)}
@@ -86,7 +87,8 @@ export function StatusMenu({
           data-testid="status-button"
         >
           <StatusGlyph status={note.status} size={11} />
-          {statusLabel(note.status)} ▾
+          {statusLabel(note.status)}
+          <Icon name="chevron-down" size={12} />
         </button>
       )}
       {open && (
@@ -94,12 +96,12 @@ export function StatusMenu({
           role="menu"
           onKeyDown={onMenuKey}
           className={cn(
-            'absolute top-full z-30 mt-1.5 w-[300px] max-w-[calc(100vw-2rem)] border border-strong bg-elevated text-left shadow-layer',
+            'absolute top-full z-30 mt-1.5 w-[300px] max-w-[calc(100vw-2rem)] border border-strong bg-elevated text-left text-ui shadow-layer',
             variant === 'more' ? 'right-0' : 'left-0',
           )}
           data-testid="status-menu"
         >
-          <div className="border-b px-3 pt-2.5 pb-2 text-[11px] font-bold tracking-[0.08em] text-faint uppercase">
+          <div className="border-b px-3 pt-2.5 pb-2 text-meta font-bold tracking-[0.08em] text-faint uppercase">
             {note.code} · próximos status do contrato
           </div>
           {options.map((s, i) => (
@@ -117,8 +119,8 @@ export function StatusMenu({
             >
               <StatusGlyph status={s} size={12} />
               <span>
-                <b className="block text-[13px] font-semibold text-strong">{statusLabel(s)}</b>
-                {condition(s) && <small className="text-[12px] text-faint">{condition(s)}</small>}
+                <b className="block text-ui font-semibold text-strong">{statusLabel(s)}</b>
+                {condition(s) && <small className="text-small text-faint">{condition(s)}</small>}
               </span>
             </button>
           ))}

@@ -67,17 +67,17 @@ export function PainelView() {
           >
             <span
               className={cn(
-                'text-[40px] leading-none font-extrabold text-strong tabular-nums',
+                'text-stat leading-none font-extrabold text-strong tabular-nums',
                 s.alert && s.v && 'text-nasa',
               )}
             >
               {s.v}
             </span>
-            <span className="flex items-center gap-2 text-[12px] font-bold tracking-[0.06em] text-secondary uppercase">
+            <span className="flex items-center gap-2 text-small font-bold tracking-[0.06em] text-secondary uppercase">
               <StatusGlyph status={s.g} size={11} />
               {s.l}
             </span>
-            <small className="truncate text-[12px] text-faint">{s.s}</small>
+            <small className="truncate text-small text-faint">{s.s}</small>
           </div>
         ))}
       </div>
@@ -94,19 +94,19 @@ export function PainelView() {
             data-testid="painel-project"
           >
             <button className="text-left" onClick={() => open(noteId(p.note.path))}>
-              <div className="text-[24px] leading-none font-extrabold text-strong">
+              <div className="text-title leading-none font-extrabold text-strong">
                 {p.note.code}
               </div>
-              <div className="mt-1.5 text-[13px] text-secondary">{p.note.title}</div>
+              <div className="mt-1.5 text-ui text-secondary">{p.note.title}</div>
             </button>
             <div className="col-span-2 row-start-2 md:col-span-1 md:row-start-auto">
               <ProjectTrajectory tasks={p.tasks} height={64} />
             </div>
             <div className="text-right">
-              <span className="text-[22px] font-extrabold text-strong tabular-nums">
+              <span className="text-title font-extrabold text-strong tabular-nums">
                 {p.done}/{p.tasks.length}
               </span>
-              <small className="block text-[12px] text-faint">concluídas</small>
+              <small className="block text-small text-faint">concluídas</small>
             </div>
           </div>
         ))}

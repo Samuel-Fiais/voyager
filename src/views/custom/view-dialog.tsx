@@ -113,7 +113,7 @@ export function ViewDialog({
               key={s}
               type="button"
               aria-pressed={statuses.includes(s)}
-              className={`border px-2 py-1 text-[12px] ${statuses.includes(s) ? 'border-strong bg-panel text-strong' : 'text-secondary'}`}
+              className={`border px-2 py-1 text-small ${statuses.includes(s) ? 'border-strong bg-panel text-strong' : 'text-secondary'}`}
               onClick={() => setStatuses(toggle(statuses, s))}
             >
               {statusLabel(s)}
@@ -160,7 +160,7 @@ export function ViewDialog({
               key={k}
               type="button"
               aria-pressed={columns.includes(k)}
-              className={`border px-2 py-1 text-[12px] ${columns.includes(k) ? 'border-strong bg-panel text-strong' : 'text-secondary'}`}
+              className={`border px-2 py-1 text-small ${columns.includes(k) ? 'border-strong bg-panel text-strong' : 'text-secondary'}`}
               onClick={() => setColumns(toggle(columns, k))}
             >
               {label}

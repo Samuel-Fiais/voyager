@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { formatWhen } from '@/record/time'
+import { statusLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
 import { Page, ViewHeader } from '../common'
 import { parseView } from './view-def'
@@ -24,7 +25,7 @@ export function CustomView({ path }: { path: string }) {
   const q = view.query
   const filter = [
     q.type && `type = ${[q.type].flat().join(', ')}`,
-    q.status && `status = ${[q.status].flat().join(', ')}`,
+    q.status && `status = ${[q.status].flat().map(statusLabel).join(', ')}`,
     q.client && `cliente ${q.client}`,
     q.project && `projeto ${q.project}`,
   ]
@@ -45,7 +46,7 @@ export function CustomView({ path }: { path: string }) {
         columns={view.columns}
         by={view.by}
       />
-      <p className="text-[12px] text-faint">
+      <p className="text-small text-faint">
         Atualizada {formatWhen(view.updated_at)} por {view.updated_by} · {view.audit.length}{' '}
         registro{view.audit.length > 1 ? 's' : ''} de auditoria no JSON.
       </p>

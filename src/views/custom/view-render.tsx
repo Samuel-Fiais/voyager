@@ -1,8 +1,9 @@
+import { StatusValue } from '@/components/status-value'
 import { StatusGlyph } from '@/components/status-glyph'
 import { useNav } from '@/shell/nav'
 import { noteId } from '@/shell/nav-ids'
 import { statusesOf } from '@/vault/contracts'
-import { statusLabel, typeLabel } from '@/vault/labels'
+import { isStatusField, statusLabel, typeLabel } from '@/vault/labels'
 import type { Note, VaultIndex } from '@/vault/vault-index'
 import { BarList } from './bars'
 import { COLUMNS, groupCount, runQuery, type GroupBy, type ViewQuery } from './query'
@@ -10,7 +11,7 @@ import { COLUMNS, groupCount, runQuery, type GroupBy, type ViewQuery } from './q
 function cell(index: VaultIndex, n: Note, col: string) {
   switch (col) {
     case 'code':
-      return <span className="font-mono text-[12px] text-strong">{n.code}</span>
+      return <span className="font-mono text-small text-strong">{n.code}</span>
     case 'title':
       return <span className="text-strong">{n.title}</span>
     case 'status':
@@ -28,13 +29,11 @@ function cell(index: VaultIndex, n: Note, col: string) {
       return n.project ? (index.notes.get(n.project)?.code ?? '—') : '—'
     case 'updated':
       return (
-        <span className="font-mono text-[11.5px]">
-          {String(n.data.updated_at ?? '').slice(0, 10)}
-        </span>
+        <span className="font-mono text-small">{String(n.data.updated_at ?? '').slice(0, 10)}</span>
       )
     default: {
       const v = n.data[col]
-      return v == null ? '—' : String(v)
+      return isStatusField(col) ? <StatusValue status={v} /> : v == null ? '—' : String(v)
     }
   }
 }
@@ -51,7 +50,7 @@ export function QueryTable({
   const { open } = useNav()
   return (
     <div className="overflow-x-auto" data-testid="view-table">
-      <table className="w-full border-collapse text-[13.5px]">
+      <table className="w-full border-collapse text-ui">
         <thead>
           <tr>
             {columns.map((c) => (
@@ -109,10 +108,10 @@ export function QueryKanban({ index, notes }: { index: VaultIndex; notes: Note[]
         <div key={s} className="grid content-start gap-1.5">
           <div className="flex items-center gap-2 pt-2 pb-1.5 rule-column">
             <StatusGlyph status={s} size={11} />
-            <b className="text-[11.5px] font-bold tracking-[0.06em] text-strong uppercase">
+            <b className="text-small font-bold tracking-[0.06em] text-strong uppercase">
               {statusLabel(s)}
             </b>
-            <span className="ml-auto font-mono text-[11px] text-faint">
+            <span className="ml-auto font-mono text-meta text-faint">
               {notes.filter((n) => n.status === s).length}
             </span>
           </div>
@@ -124,8 +123,8 @@ export function QueryKanban({ index, notes }: { index: VaultIndex; notes: Note[]
                 className="grid gap-0.5 border bg-elevated px-2.5 py-2 text-left hover:border-faint"
                 onClick={() => open(noteId(n.path))}
               >
-                <span className="font-mono text-[11px] text-secondary">{n.code}</span>
-                <span className="text-[13px] text-strong">{n.title}</span>
+                <span className="font-mono text-meta text-secondary">{n.code}</span>
+                <span className="text-ui text-strong">{n.title}</span>
               </button>
             ))}
         </div>
