@@ -261,10 +261,7 @@ export function ProjectTrajectory({ tasks, height = 90 }: { tasks: Note[]; heigh
   const compact = n > 48
   const W = dense ? Math.max(640, Math.min(3200, n * 14)) : 640
   const H = dense ? Math.max(height, compact ? 88 : 80) : height
-  const P = useMemo(
-    () => [10, H - 10, W / 2, dense ? -14 : -6, W - 10, H - 10],
-    [H, W, dense],
-  )
+  const P = useMemo(() => [10, H - 10, W / 2, dense ? -14 : -6, W - 10, H - 10], [H, W, dense])
   const pts = useMemo(() => (n ? equalArcPoints(P, n) : []), [n, P])
   const pickRadius = compact ? 14 : dense ? 12 : 10
   const [anchorWidth, setAnchorWidth] = useState(W)
