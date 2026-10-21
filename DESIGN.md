@@ -17,7 +17,7 @@ Padrão de interface **VO-DS001 (Voyager)**: a identidade do Manual de Normas Gr
 | `--vy-nasa`      | `#fc3d21` | `#e0301b` | **só** ação que grava e bloqueado | `bg-nasa`, `text-nasa` |
 
 - Tema: escuro por padrão; segue o sistema na primeira visita (`prefers-color-scheme`) e guarda a escolha do usuário (`data-theme` no `<html>`, `localStorage voyager.theme`). Ver `src/theme/`.
-- Tipografia: Archivo (texto; largura 125% só no logotipo, utilitário `logotype`) e JetBrains Mono (códigos, horários, números). Escala: `text-code` (56px/800), `text-title` (24px/500), `text-body` (15px, entrelinha 1,7, `measure` = 70ch), `text-label` + `label-caps` (11px, caixa alta, 0,08em).
+- Tipografia: Archivo (texto; largura 125% só no logotipo, utilitário `logotype`) e JetBrains Mono (códigos, horários, números). Escala de 7 degraus, sem tamanho solto em px: `text-code` (56px/800), `text-stat` (40px, números grandes), `text-title` (24px/500), `text-body` (15px, entrelinha 1,7, `measure` = 70ch), `text-ui` (13px: sidebar, menus, listas, botões), `text-small` (12px: metadados e textos de apoio) e `text-meta` / `text-label` (11px; `label-caps` em caixa alta, 0,08em). Contêineres de interface (sidebar, topo, menus) declaram `text-ui`; só o conteúdo das notas usa 15px.
 - Forma: **sem raios** (todos os `--radius-*` são 0). Réguas: `rule-record` (6px, topo do cabeçalho de registro), `rule-column` (3px, topo de colunas e indicadores), `rule-section` (2px, sob títulos de seção), 1px no resto. Sombra (`shadow-layer`) só em camadas sobrepostas.
 
 ## Regras
@@ -25,6 +25,9 @@ Padrão de interface **VO-DS001 (Voyager)**: a identidade do Manual de Normas Gr
 - **Vermelho NASA** aparece só em ação que grava no repositório (Sincronizar, Confirmar e commitar, Salvar, Continuar em diálogos que gravam) e em bloqueado. O ícone tem a sonda vermelha (única exceção).
 - **Status não usa cor**: usa forma (`src/components/status-glyph.tsx`): anel = em revisão/ativo; anel apagado = pronta/rascunho; anel tracejado = ajustes pedidos/esclarecimento; meio cheio = em andamento; cheio apagado = concluída; vermelho = bloqueada; riscado = cancelada/recusada.
 - Texto usa tokens de texto, nunca a cor de uma marca.
+- **Ícones** (`src/components/icon.tsx`, lucide-react, a biblioteca do shadcn/ui): todo ícone de interface passa por `<Icon name="…" />`, em 16px com traço de 1,5 que não escala. Proibido usar caracteres como ícone (☀ ☾ › ⋯ ▾ × ☰ ⟳), porque caem em fontes de símbolos e saem da linha de base. Ícones próprios do Voyager (sonda, `StatusGlyph`, órbita de sincronização, trajetórias) continuam em SVG. Contadores usam mono só nos números (`1 em rev.`: o `1` em mono, o resto na fonte do texto).
+- **Link** (utilitários `link` e `link-external` em `src/index.css`): texto principal, sublinhado sólido de 1px apagado (`--vy-faint`) a 3px do texto, que acende em `--vy-strong` ao apontar, com contorno de 1px no foco por teclado. Link que sai do Voyager (nova aba, anexo, URL) ganha `↗` no fim. Link quebrado é o único em vermelho e tracejado. Nunca usar `underline` solto nem vermelho no hover.
+- **Cursor** (`src/cursors.css`, gerado por `node scripts/gerar-cursores.mjs`): seta e mãos clássicas, sólidas, de 32px, com halo na cor oposta e um toque espacial. Seta com estrela no padrão, mão com estrela em links e botões, mão aberta e fechada em `cursor-grab`, I sólido com estrela em campos de texto e no editor, seta com planeta de anel em `aria-busy`; vermelho só em bloqueado. Segue o tema, só vale com mouse (`hover: hover`) e some em `forced-colors`.
 
 ## Componentes e padrões de tela
 

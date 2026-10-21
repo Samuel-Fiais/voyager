@@ -1,3 +1,4 @@
+import { statusLabel } from '@/vault/labels'
 import type { Note, VaultIndex } from '@/vault/vault-index'
 import { appendAudit, auditLine } from './audit-line'
 import { frontmatterLines, setField } from './frontmatter'
@@ -74,7 +75,7 @@ export function planStatusChange({
   const changes: FileChange[] = [{ path: note.path, before: note.text, after }]
   if (!errors.length) errors.push(...validateChanges(index.files, changes))
   return {
-    title: `${note.code ?? note.name}: ${from} → ${to}`,
+    title: `${note.code ?? note.name}: ${statusLabel(from)} → ${statusLabel(to)}`,
     changes,
     diffs: [{ path: note.path, lines: frontmatterDiff(note.text, after) }],
     auditLines: [{ path: note.path, line }],

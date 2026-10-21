@@ -63,3 +63,28 @@ test('páginas de registro: demanda, projeto, task, cliente e anexo', async ({ p
   )
   expect(overflow).toBeLessThanOrEqual(0)
 })
+
+test('status em português no cabeçalho, propriedades e confirmação', async ({ page }, info) => {
+  const gh = await fakeGitHub(page)
+  await signIn(page, gh)
+  await openWorkspace(page)
+  await page.goto(
+    `/?v=${encodeURIComponent(`n:${P}/Tasks/AC-T005 - Relatórios/AC-T005 - Relatórios.md`)}`,
+  )
+  const properties = page.getByTestId('properties')
+  await expect(page.getByTestId('status-button')).toHaveText('Planejada')
+  await expect(page.getByTestId('note-header')).toContainText('Não criado')
+  await expect(properties).toContainText('Planejada')
+  await expect(properties).toContainText('Não criado')
+  await expect(properties).toContainText('Não avaliada')
+  await expect(properties).not.toContainText('not_created')
+  await expect(properties).not.toContainText('not_assessed')
+  await page.screenshot({ path: info.outputPath('status-portugues.png'), fullPage: true })
+  await page.getByTestId('status-button').click()
+  await page
+    .getByTestId('status-menu')
+    .getByRole('menuitem', { name: 'Pronta', exact: false })
+    .click()
+  await expect(page.getByTestId('commit-sheet')).toContainText('AC-T005: Planejada → Pronta')
+  await expect(page.getByTestId('commit-diff')).toContainText('+ status: ready')
+})

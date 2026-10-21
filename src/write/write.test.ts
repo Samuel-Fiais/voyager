@@ -118,6 +118,7 @@ describe('plano de mudança de status', () => {
     expect(plan.auditLines[0].line).toBe(
       `- \`${NOW}\` | Samuel Fiais | status_change | planned | ready | mudança de status (via Voyager)`,
     )
+    expect(plan.title).toBe('AC-T005: Planejada → Pronta')
     expect(plan.message).toBe('AC-T005: planned → ready (via Voyager)')
   })
 

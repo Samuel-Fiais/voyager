@@ -51,20 +51,18 @@ export function CommitSheet() {
         data-testid="commit-sheet"
       >
         <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 pb-2.5 rule-section">
-          <b className="text-[22px] font-extrabold text-strong sm:text-[26px]">
-            {plan?.title ?? '…'}
-          </b>
-          <span className="text-[13.5px] text-secondary">commit direto em {active?.branch}</span>
+          <b className="text-title font-extrabold text-strong">{plan?.title ?? '…'}</b>
+          <span className="text-ui text-secondary">commit direto em {active?.branch}</span>
         </div>
 
         {state.phase === 'conflict' && state.conflict ? (
           <div
-            className="border-l-[3px] border-nasa bg-bg px-3 py-2 text-[13.5px] text-secondary"
+            className="border-l-[3px] border-nasa bg-bg px-3 py-2 text-ui text-secondary"
             data-testid="conflict"
           >
             <b className="block text-strong">A branch avançou e mudou o mesmo arquivo.</b>
             {state.conflict.paths.map((p) => (
-              <span key={p} className="block font-mono text-[12px]">
+              <span key={p} className="block font-mono text-small">
                 {p}
               </span>
             ))}
@@ -75,7 +73,7 @@ export function CommitSheet() {
 
         {state.phase === 'error' && (
           <div
-            className="border-l-[3px] border-nasa bg-bg px-3 py-2 text-[13.5px] text-secondary"
+            className="border-l-[3px] border-nasa bg-bg px-3 py-2 text-ui text-secondary"
             role="alert"
           >
             Falha ao gravar: {state.error}
@@ -83,12 +81,12 @@ export function CommitSheet() {
         )}
 
         {reasonInfo && (
-          <label className="grid gap-1.5 text-[11.5px] font-bold tracking-[0.08em] text-secondary uppercase">
+          <label className="grid gap-1.5 text-small font-bold tracking-[0.08em] text-secondary uppercase">
             {reasonInfo.label}
             {reasonInfo.required ? ' *' : ''}
             <input
               ref={reasonRef}
-              className="border bg-bg px-3 py-2 text-[14px] font-normal tracking-normal text-strong normal-case outline-none focus:border-strong"
+              className="border bg-bg px-3 py-2 text-ui font-normal tracking-normal text-strong normal-case outline-none focus:border-strong"
               value={state.reason}
               onChange={(e) => setReason(e.target.value)}
               onKeyDown={(e) => {
@@ -102,7 +100,7 @@ export function CommitSheet() {
 
         {plan && (
           <div
-            className="overflow-x-auto border bg-bg px-3.5 py-3 font-mono text-[11.5px] leading-[1.7] whitespace-pre"
+            className="overflow-x-auto border bg-bg px-3.5 py-3 font-mono text-small leading-[1.7] whitespace-pre"
             data-testid="commit-diff"
           >
             {plan.diffs.map((d) => (
@@ -128,7 +126,7 @@ export function CommitSheet() {
 
         {plan && plan.errors.length > 0 && (
           <ul
-            className="grid gap-1 border-l-[3px] border-nasa bg-bg px-3 py-2 text-[13px] text-secondary"
+            className="grid gap-1 border-l-[3px] border-nasa bg-bg px-3 py-2 text-ui text-secondary"
             data-testid="commit-errors"
           >
             {plan.errors.map((e) => (
@@ -138,7 +136,7 @@ export function CommitSheet() {
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <small className="text-[12px] text-faint">
+          <small className="text-small text-faint">
             Validado pelas regras do validar-vault.py. O board Multica não é sincronizado.
           </small>
           <div className="flex gap-2.5">
@@ -175,8 +173,8 @@ export function WriteToast() {
       className="fixed right-4 bottom-4 z-50 grid max-w-[calc(100vw-2rem)] min-w-[280px] gap-0.5 bg-strong px-4 py-3 text-bg shadow-layer"
       data-testid="toast"
     >
-      <b className="text-[11.5px] font-extrabold tracking-[0.08em] uppercase">{toast.title}</b>
-      <span className="font-mono text-[11.5px]">{toast.text}</span>
+      <b className="text-small font-extrabold tracking-[0.08em] uppercase">{toast.title}</b>
+      <span className="font-mono text-small">{toast.text}</span>
     </div>
   )
 }

@@ -19,7 +19,7 @@ export function DemandasView() {
         title="Demandas"
       />
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-[13.5px]" data-testid="demand-table">
+        <table className="w-full border-collapse text-ui" data-testid="demand-table">
           <thead>
             <tr>
               {['Código', 'Título', 'Status', 'Encaminhamento', 'Cliente'].map((h) => (
@@ -41,7 +41,7 @@ export function DemandasView() {
                 onClick={() => open(noteId(d.path))}
                 onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && open(noteId(d.path))}
               >
-                <td className="border-b py-2.5 pr-3 align-top font-mono text-[12px] text-strong">
+                <td className="border-b py-2.5 pr-3 align-top font-mono text-small text-strong">
                   {d.code}
                 </td>
                 <td className="border-b py-2.5 pr-3 align-top text-strong">{d.title}</td>
@@ -51,7 +51,7 @@ export function DemandasView() {
                     {statusLabel(d.status)}
                   </span>
                 </td>
-                <td className="border-b py-2.5 pr-3 align-top font-mono text-[12px] text-secondary">
+                <td className="border-b py-2.5 pr-3 align-top font-mono text-small text-secondary">
                   {String(d.data.routing ?? '—')}
                 </td>
                 <td className="border-b py-2.5 pr-3 align-top text-secondary">

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { typeLabel } from '@/vault/labels'
 import { useVault } from '@/vault/vault-context'
 import { byCode, type Note } from '@/vault/vault-index'
+import { Icon } from '@/components/icon'
 
 /** Escolha de uma nota por código ou título (sem acento), com filtro opcional. */
 export function NotePicker({
@@ -34,14 +35,14 @@ export function NotePicker({
     return (
       <div className="flex items-center gap-2 border bg-bg px-3 py-2" data-testid={testId}>
         <StatusGlyph status={value.status} size={11} />
-        <span className="font-mono text-[12px] text-strong">{value.code}</span>
+        <span className="font-mono text-small text-strong">{value.code}</span>
         <span className="truncate text-secondary">{value.title}</span>
         <button
           className="ml-auto text-faint hover:text-strong"
           onClick={() => onChange(null)}
           aria-label="Trocar"
         >
-          ×
+          <Icon name="close" size={12} />
         </button>
       </div>
     )
@@ -49,7 +50,7 @@ export function NotePicker({
   return (
     <div className="grid border bg-bg" data-testid={testId}>
       <input
-        className="bg-transparent px-3 py-2 text-[14px] text-strong outline-none placeholder:text-faint"
+        className="bg-transparent px-3 py-2 text-ui text-strong outline-none placeholder:text-faint"
         placeholder={placeholder}
         value={q}
         onChange={(e) => setQ(e.target.value)}
@@ -63,18 +64,18 @@ export function NotePicker({
                 role="option"
                 aria-selected={false}
                 className={cn(
-                  'grid w-full grid-cols-[14px_96px_minmax(0,1fr)_auto] items-center gap-2 px-3 py-1.5 text-left text-[13px] hover:bg-panel',
+                  'grid w-full grid-cols-[14px_96px_minmax(0,1fr)_auto] items-center gap-2 px-3 py-1.5 text-left text-ui hover:bg-panel',
                 )}
                 onClick={() => onChange(n)}
               >
                 <StatusGlyph status={n.status} size={10} />
-                <span className="truncate font-mono text-[11.5px] text-strong">{n.code}</span>
+                <span className="truncate font-mono text-small text-strong">{n.code}</span>
                 <span className="truncate text-secondary">{n.title}</span>
-                <small className="text-[10.5px] text-faint uppercase">{typeLabel(n.type)}</small>
+                <small className="text-meta text-faint uppercase">{typeLabel(n.type)}</small>
               </button>
             </li>
           ))}
-          {!items.length && <li className="px-3 py-2 text-[13px] text-faint">Nada encontrado.</li>}
+          {!items.length && <li className="px-3 py-2 text-ui text-faint">Nada encontrado.</li>}
         </ul>
       )}
     </div>

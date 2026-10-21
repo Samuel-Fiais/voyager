@@ -44,7 +44,7 @@ export function DesignTokens() {
         <ThemeToggle />
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 pt-10 pb-20 sm:px-8">
+      <main className="mx-auto w-full max-w-7xl px-4 pt-10 pb-20 sm:px-8 2xl:max-w-[90rem]">
         <article className="pt-4 rule-record">
           <p className="label-caps">
             Padrão de interface · Voyager · tema {theme === 'dark' ? 'escuro' : 'claro'}
@@ -58,7 +58,7 @@ export function DesignTokens() {
         </article>
 
         <Section title="Cores">
-          <ul className="grid grid-cols-1 gap-px border bg-line sm:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-px border bg-line sm:grid-cols-3 xl:grid-cols-4">
             {COLORS.map((c) => (
               <li key={c.token} className="bg-bg p-3" data-testid={`swatch-${c.token}`}>
                 <div className="h-12 border" style={{ background: `var(--vy-${c.token})` }} />

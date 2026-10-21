@@ -10,6 +10,7 @@ import { useWorkspace } from '@/workspace/workspace-context'
 import { isImagePath, useAttachmentUrl } from './attachments'
 import { Mermaid } from './mermaid'
 import { EMBED, WIKILINK } from './remark-wikilinks'
+import { cn } from '@/lib/utils'
 import { toHast } from './to-hast'
 
 export type CodeRenderer = (lang: string, code: string) => ReactNode | null
@@ -53,7 +54,7 @@ function WikiLink({
   return (
     <button
       type="button"
-      className="text-strong underline decoration-faint decoration-1 underline-offset-[3px] hover:decoration-nasa"
+      className="link"
       onClick={() => open(noteId(path))}
       title={note.code ? `${note.code} · ${note.title}` : note.title}
       data-wikilink={target}
@@ -67,12 +68,7 @@ function Attachment({ path, children }: { path: string; children: ReactNode }) {
   const { active } = useWorkspace()
   const url = useAttachmentUrl(active?.id, path)
   return url ? (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-strong underline underline-offset-[3px]"
-    >
+    <a href={url} target="_blank" rel="noopener noreferrer" className="link-external link">
       {children}
     </a>
   ) : (
@@ -112,10 +108,12 @@ export function Markdown({
   source,
   notePath,
   renderCode,
+  className,
 }: {
   source: string
   notePath: string
   renderCode?: CodeRenderer
+  className?: string
 }) {
   const hast = useMemo(() => toHast(source), [source])
   const components: Partial<Components> = {
@@ -129,12 +127,23 @@ export function Markdown({
       }
       if (/^(https?:|mailto:)/.test(href)) {
         return (
-          <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            {...rest}
+            className="link-external link"
+          >
             {children}
           </a>
         )
       }
-      if (href.startsWith('#')) return <a href={href}>{children}</a>
+      if (href.startsWith('#'))
+        return (
+          <a href={href} className="link">
+            {children}
+          </a>
+        )
       // link Markdown relativo: nota ou anexo do vault
       let decoded = href.split('#')[0]
       try {
@@ -182,7 +191,7 @@ export function Markdown({
       const custom = renderCode?.(lang, text)
       if (custom) return <>{custom}</>
       return (
-        <pre className="overflow-x-auto border bg-panel p-3.5 font-mono text-[12.5px] leading-relaxed text-strong">
+        <pre className="overflow-x-auto border bg-panel p-3.5 font-mono text-small leading-relaxed text-strong">
           <code>{text}</code>
         </pre>
       )
@@ -194,7 +203,7 @@ export function Markdown({
     ),
   }
   return (
-    <div className="prose-vy" data-testid="markdown">
+    <div className={cn('prose-vy', className)} data-testid="markdown">
       {toJsxRuntime(hast, { Fragment, jsx, jsxs, components })}
     </div>
   )

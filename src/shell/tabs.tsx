@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import { useVault } from '@/vault/vault-context'
 import { useNav } from './nav'
 import { navMeta } from './nav-meta'
+import { Icon } from '@/components/icon'
 
 const short = (s: string, n = 24) => (s.length > n ? `${s.slice(0, n)}…` : s)
 
@@ -28,7 +29,7 @@ export function Tabs() {
             key={id}
             ref={on ? activeRef : undefined}
             className={cn(
-              'flex shrink-0 items-center gap-2 border-r pr-2 pl-3.5 text-[13px] whitespace-nowrap text-secondary',
+              'flex shrink-0 items-center gap-2 border-r pr-2 pl-3.5 text-ui whitespace-nowrap text-secondary',
               on && 'bg-bg text-strong shadow-[inset_0_3px_0_var(--vy-strong)]',
             )}
           >
@@ -38,15 +39,15 @@ export function Tabs() {
               className="flex h-[38px] items-center gap-2"
               onClick={() => open(id)}
             >
-              <span className="font-mono text-[11px] text-faint">{meta.code}</span>
+              <span className="font-mono text-meta text-faint">{meta.code}</span>
               {short(meta.label)}
             </button>
             <button
-              className="grid size-5 place-items-center text-[15px] leading-none text-faint hover:bg-elevated hover:text-strong"
+              className="grid size-5 place-items-center text-faint hover:bg-elevated hover:text-strong"
               aria-label={`Fechar aba ${meta.label}`}
               onClick={() => close(id)}
             >
-              ×
+              <Icon name="close" size={12} />
             </button>
           </div>
         )

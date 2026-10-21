@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { DEFAULT_INTERVAL_MIN, useWorkspace } from './workspace-context'
+import { Icon } from '@/components/icon'
 
 const INTERVALS = [0, 5, 10, 30, 60]
 
@@ -37,14 +38,12 @@ export function WorkspaceSwitcher({ onAdd }: { onAdd: () => void }) {
         <span className="hidden shrink-0 font-mono text-label text-faint sm:inline">
           {active.branch}
         </span>
-        <span aria-hidden="true" className="text-faint">
-          ▾
-        </span>
+        <Icon name="chevron-down" size={12} className="self-center text-faint" />
       </button>
       {open && (
         <div
           role="menu"
-          className="absolute top-full left-0 z-30 mt-1 w-72 max-w-[calc(100vw-2rem)] border bg-elevated shadow-layer"
+          className="absolute top-full left-0 z-30 mt-1 w-72 max-w-[calc(100vw-2rem)] border bg-elevated text-ui shadow-layer"
         >
           <p className="px-3 pt-3 label-caps">Workspaces</p>
           <ul className="py-1">

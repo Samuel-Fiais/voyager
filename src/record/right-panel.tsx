@@ -1,4 +1,6 @@
 import { useState, type ReactNode } from 'react'
+import { StatusValue } from '@/components/status-value'
+import { isStatusField } from '@/vault/labels'
 import { useNav } from '@/shell/nav'
 import { noteId } from '@/shell/nav-ids'
 import { useVault } from '@/vault/vault-context'
@@ -6,11 +8,20 @@ import { byCode, noteByWikilink, type Note } from '@/vault/vault-index'
 import { formatWhen } from './time'
 import { AuditTrajectory } from './trajectory'
 
+const STATUS_FIELDS: Record<string, string> = {
+  status: 'Status',
+  pull_request_status: 'Status do PR',
+  knowledge_status: 'Documentação',
+  tests_status: 'Testes',
+  from_status: 'Status anterior',
+  to_status: 'Novo status',
+}
+
 const HIDDEN = new Set(['created_by', 'created_at', 'updated_by', 'updated_at'])
 
 function H3({ children, count }: { children: ReactNode; count?: number }) {
   return (
-    <h3 className="mb-2.5 flex justify-between text-[11px] font-bold tracking-[0.1em] text-faint uppercase">
+    <h3 className="mb-2.5 flex justify-between text-meta font-bold tracking-[0.1em] text-faint uppercase">
       {children}
       {count !== undefined && <small className="font-mono">{count}</small>}
     </h3>
@@ -21,11 +32,11 @@ function NoteLink({ note }: { note: Note }) {
   const { open } = useNav()
   return (
     <button
-      className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-2 text-left text-[13px] hover:text-strong"
+      className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-2 text-left text-ui link"
       onClick={() => open(noteId(note.path))}
     >
-      <span className="font-mono text-[11px] text-strong">{note.code ?? '·'}</span>
-      <span className="truncate text-secondary">{note.title}</span>
+      <span className="font-mono text-meta">{note.code ?? '·'}</span>
+      <span className="truncate">{note.title}</span>
     </button>
   )
 }
@@ -51,10 +62,7 @@ function Value({ value, from }: { value: unknown; from: string }) {
     const target = noteByWikilink(index, wl[1], from)
     if (target) {
       return (
-        <button
-          className="truncate text-left text-strong underline decoration-faint underline-offset-2"
-          onClick={() => open(noteId(target.path))}
-        >
+        <button className="truncate text-left link" onClick={() => open(noteId(target.path))}>
           {target.code ?? wl[2] ?? target.title}
         </button>
       )
@@ -67,13 +75,28 @@ function Value({ value, from }: { value: unknown; from: string }) {
         href={text}
         target="_blank"
         rel="noopener noreferrer"
-        className="truncate text-strong underline underline-offset-2"
+        className="link-external truncate link"
       >
         {text.replace(/^https?:\/\/(www\.)?/, '')}
       </a>
     )
   }
   return <span className="truncate">{text}</span>
+}
+
+function PropertyValue({ field, value, from }: { field: string; value: unknown; from: string }) {
+  if (isStatusField(field)) {
+    return Array.isArray(value) ? (
+      <span className="grid gap-0.5">
+        {value.map((status, i) => (
+          <StatusValue key={i} status={status} />
+        ))}
+      </span>
+    ) : (
+      <StatusValue status={value} />
+    )
+  }
+  return <Value value={value} from={from} />
 }
 
 export function RightPanel({ note }: { note: Note }) {
@@ -104,20 +127,22 @@ export function RightPanel({ note }: { note: Note }) {
       <div>
         <H3>Propriedades</H3>
         <dl
-          className="grid grid-cols-[100px_minmax(0,1fr)] gap-x-2.5 gap-y-[7px] text-[13px]"
+          className="grid grid-cols-[100px_minmax(0,1fr)] gap-x-2.5 gap-y-[7px] text-ui"
           data-testid="properties"
         >
           {props.map(([k, v]) => (
             <div key={k} className="contents">
-              <dt className="truncate pt-0.5 font-mono text-[11px] text-faint">{k}</dt>
+              <dt className="truncate pt-0.5 font-mono text-meta text-faint">
+                {STATUS_FIELDS[k] ?? k}
+              </dt>
               <dd className="grid min-w-0 text-strong">
-                <Value value={v} from={note.path} />
+                <PropertyValue field={k} value={v} from={note.path} />
               </dd>
             </div>
           ))}
           {updatedAt && (
             <>
-              <dt className="pt-0.5 font-mono text-[11px] text-faint">updated</dt>
+              <dt className="pt-0.5 font-mono text-meta text-faint">updated</dt>
               <dd className="min-w-0 truncate text-strong">
                 {formatWhen(updatedAt)} · {String(note.data.updated_by ?? '')}
               </dd>
@@ -144,7 +169,7 @@ export function RightPanel({ note }: { note: Note }) {
             ))}
             {back.length > shownBack.length && (
               <button
-                className="text-left text-[12px] text-faint hover:text-strong"
+                className="text-left text-small text-faint hover:text-strong"
                 onClick={() => setAllBack(true)}
               >
                 mais {back.length - shownBack.length}
@@ -152,7 +177,7 @@ export function RightPanel({ note }: { note: Note }) {
             )}
           </div>
         ) : (
-          <p className="text-[12.5px] text-faint">Nenhuma nota aponta para esta.</p>
+          <p className="text-small text-faint">Nenhuma nota aponta para esta.</p>
         )}
       </div>
       <div>

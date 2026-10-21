@@ -94,7 +94,7 @@ function Card({ task, projectCode }: { task: Note; projectCode: string }) {
     >
       <span className="flex items-center gap-2">
         <StatusGlyph status={task.status} size={10} />
-        <span className="font-mono text-[11px] text-secondary">{task.code}</span>
+        <span className="font-mono text-meta text-secondary">{task.code}</span>
         <span
           className="ml-auto opacity-100 sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100"
           data-card-menu
@@ -102,10 +102,10 @@ function Card({ task, projectCode }: { task: Note; projectCode: string }) {
           <StatusMenu note={task} variant="more" />
         </span>
       </span>
-      <span className="text-[13.5px] leading-snug text-strong">{task.title}</span>
-      <span className="hidden gap-2.5 text-[11.5px] text-faint group-focus-within:flex group-hover:flex">
+      <span className="text-ui leading-snug text-strong">{task.title}</span>
+      <span className="hidden gap-2.5 text-small text-faint group-focus-within:flex group-hover:flex">
         <span>{projectCode}</span>
-        <span>PR {String(task.data.pull_request_status ?? '—')}</span>
+        <span>PR {statusLabel(task.data.pull_request_status)}</span>
       </span>
     </div>
   )
@@ -147,24 +147,24 @@ function Column({
         <StatusGlyph status={status} size={12} />
         <b
           className={cn(
-            'text-[12px] font-bold tracking-[0.06em] text-strong uppercase',
+            'text-small font-bold tracking-[0.06em] text-strong uppercase',
             status === 'blocked' && 'text-nasa',
           )}
         >
           {statusLabel(status)}
         </b>
-        <span className="font-mono text-[11px] text-faint">{total}</span>
+        <span className="font-mono text-meta text-faint">{total}</span>
       </div>
       {items.map((t) => (
         <Card key={t.path} task={t} projectCode={projects.get(t.project ?? '') ?? ''} />
       ))}
       {!total && (
-        <div className="border border-dashed px-3 py-[18px] text-center text-[12.5px] text-faint">
+        <div className="border border-dashed px-3 py-[18px] text-center text-small text-faint">
           {status === 'in_progress' ? 'Nada em andamento agora.' : 'Nenhuma task'}
         </div>
       )}
       {status === 'done' && total > items.length && (
-        <div className="border-t border-dashed px-0.5 py-1.5 text-[12px] text-faint">
+        <div className="border-t border-dashed px-0.5 py-1.5 text-small text-faint">
           mais {total - items.length} concluídas
         </div>
       )}
@@ -221,7 +221,7 @@ export function KanbanView() {
   return (
     <div className="grid min-h-full grid-rows-[auto_minmax(0,1fr)]">
       <div className="flex flex-wrap items-center gap-2.5 border-b px-4 py-3.5 sm:px-6">
-        <h2 className="mr-3.5 text-[13px] font-extrabold tracking-[0.1em] text-strong uppercase">
+        <h2 className="mr-3.5 text-ui font-extrabold tracking-[0.1em] text-strong uppercase">
           Kanban de tasks
         </h2>
         {[
@@ -231,7 +231,7 @@ export function KanbanView() {
           <button
             key={c.id}
             className={cn(
-              'border px-2.5 py-[5px] text-[12.5px] text-secondary hover:bg-elevated',
+              'border px-2.5 py-[5px] text-small text-secondary hover:bg-elevated',
               filter === c.id && 'border-strong bg-elevated text-strong',
             )}
             onClick={() => setFilter(c.id)}
@@ -240,7 +240,7 @@ export function KanbanView() {
             {c.label}
           </button>
         ))}
-        <span className="ml-auto hidden text-[12px] text-faint md:inline">
+        <span className="ml-auto hidden text-small text-faint md:inline">
           {data.hidden.length
             ? `${data.hidden.map(statusLabel).join(' e ')} ocultas (0 tasks) · `
             : ''}

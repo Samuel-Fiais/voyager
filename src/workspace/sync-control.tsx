@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { syncLabel } from './sync-label'
 import { useWorkspace } from './workspace-context'
+import { Icon } from '@/components/icon'
 
 /** Órbita animada: um ponto percorre o anel enquanto sincroniza. */
 export function Orbit({ active, error }: { active: boolean; error?: boolean }) {
@@ -19,31 +20,33 @@ export function SyncControl() {
   const { active, sync, syncNow } = useWorkspace()
   if (!active) return null
   const busy = sync.status === 'syncing'
+  const label = syncLabel(sync, active.lastSyncAt)
   return (
-    <div className="flex min-w-0 items-center gap-2">
+    <div
+      className="flex h-8 min-w-0 items-stretch divide-x divide-line border border-line"
+      data-testid="sync-toolbar"
+    >
       <span
         className={cn(
-          'flex min-w-0 items-center gap-1.5 text-label',
-          sync.status === 'error' ? 'text-nasa' : 'text-faint',
+          'flex min-w-0 items-center gap-2 px-2.5 text-small leading-none sm:max-w-[14rem] sm:px-3',
+          sync.status === 'error' ? 'text-nasa' : 'text-secondary',
         )}
         role="status"
         data-testid="sync-status"
         title={active.lastCommit ? `Último commit lido: ${active.lastCommit}` : undefined}
       >
         <Orbit active={busy} error={sync.status === 'error'} />
-        <span className="hidden truncate md:inline">{syncLabel(sync, active.lastSyncAt)}</span>
+        <span className="hidden truncate sm:inline">{label}</span>
       </span>
       <Button
         variant="commit"
-        className="px-2 sm:px-3"
+        className="h-8 shrink-0 border-0 px-2.5 sm:px-3"
         onClick={() => void syncNow()}
         disabled={busy}
         aria-label={busy ? 'Sincronizando' : 'Sincronizar'}
         data-testid="sync"
       >
-        <span className="sm:hidden" aria-hidden="true">
-          ⟳
-        </span>
+        <Icon name="sync" className="sm:hidden" />
         <span className="hidden sm:inline">{busy ? 'Sincronizando' : 'Sincronizar'}</span>
       </Button>
     </div>

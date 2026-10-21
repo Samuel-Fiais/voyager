@@ -6,6 +6,7 @@ import { useVault } from '@/vault/vault-context'
 import { useWorkspace } from '@/workspace/workspace-context'
 import { WorkspaceSummary } from '@/workspace/workspace-summary'
 import { Page, SectionHeader, ViewHeader } from './common'
+import { Icon } from '@/components/icon'
 
 interface Folder {
   name: string
@@ -50,14 +51,14 @@ function FileRow({ path }: { path: string }) {
   const note = index?.notes.get(path)
   const name = path.split('/').pop()!
   if (!note) {
-    return <div className="truncate py-1 pl-[92px] text-[12.5px] text-faint">{name}</div>
+    return <div className="truncate py-1 pl-[92px] text-small text-faint">{name}</div>
   }
   return (
     <button
-      className="grid w-full grid-cols-[84px_minmax(0,1fr)] gap-2 py-1 text-left text-[13px] hover:bg-elevated"
+      className="grid w-full grid-cols-[84px_minmax(0,1fr)] gap-2 py-1 text-left text-ui hover:bg-elevated"
       onClick={() => open(noteId(path))}
     >
-      <span className="truncate font-mono text-[11px] text-strong">{note.code ?? ''}</span>
+      <span className="truncate font-mono text-meta text-strong">{note.code ?? ''}</span>
       <span className="truncate text-secondary">{note.code ? note.title : name}</span>
     </button>
   )
@@ -66,10 +67,10 @@ function FileRow({ path }: { path: string }) {
 function FolderNode({ folder }: { folder: Folder }) {
   return (
     <details className="group">
-      <summary className="flex cursor-pointer list-none items-center gap-2 py-1.5 text-[13px] text-secondary hover:text-strong">
-        <span className="w-3 text-faint group-open:rotate-90">›</span>
+      <summary className="flex cursor-pointer list-none items-center gap-2 py-1.5 text-ui text-secondary hover:text-strong">
+        <Icon name="chevron-right" size={12} className="text-faint group-open:rotate-90" />
         <span className="truncate">{folder.name}</span>
-        <span className="ml-auto font-mono text-[11px] text-faint">{count(folder)}</span>
+        <span className="ml-auto font-mono text-meta text-faint">{count(folder)}</span>
       </summary>
       <div className="ml-3 border-l pl-3">
         {sorted(folder.folders).map((f) => (
@@ -120,9 +121,9 @@ export function ArquivosView() {
         ))}
       </div>
       {tree.files.length > 0 && (
-        <p className="text-[12px] text-faint">Na raiz: {tree.files.join(', ')}</p>
+        <p className="text-small text-faint">Na raiz: {tree.files.join(', ')}</p>
       )}
-      <p className="text-[12px] text-faint">
+      <p className="text-small text-faint">
         As pastas continuam existindo para o Obsidian e os agentes; no Voyager elas ficam nesta
         view.
       </p>

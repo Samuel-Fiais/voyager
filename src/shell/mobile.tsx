@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 import { useVault } from '@/vault/vault-context'
 import { useNav } from './nav'
 import { navMeta } from './nav-meta'
+import { Icon } from '@/components/icon'
 
 // Celular (W11): um item por tela, navegação inferior, voltar e deslize entre os itens abertos.
 
@@ -18,18 +19,19 @@ export function MobileItemBar() {
   const next = i >= 0 && i < tabs.length - 1 ? tabs[i + 1] : null
   return (
     <div
-      className="flex h-[38px] items-center gap-2 border-b bg-panel px-2 text-[12.5px]"
+      className="flex h-[38px] items-center gap-2 border-b bg-panel px-2 text-small"
       data-testid="mobile-bar"
     >
       <button
-        className="px-2 py-1 text-secondary hover:text-strong"
+        className="flex items-center gap-1.5 px-2 py-1 text-secondary hover:text-strong"
         onClick={() => window.history.back()}
         aria-label="Voltar"
         data-testid="back"
       >
-        ← Voltar
+        <Icon name="arrow-left" size={14} />
+        Voltar
       </button>
-      <span className="min-w-0 flex-1 truncate text-center font-mono text-[11px] text-faint">
+      <span className="min-w-0 flex-1 truncate text-center font-mono text-meta text-faint">
         {meta ? `${meta.code} · ${i + 1}/${tabs.length}` : ''}
       </span>
       <button
@@ -38,7 +40,7 @@ export function MobileItemBar() {
         onClick={() => prev && open(prev)}
         aria-label="Item anterior"
       >
-        ‹
+        <Icon name="chevron-left" />
       </button>
       <button
         className="px-2 py-1 text-secondary disabled:opacity-30"
@@ -46,7 +48,7 @@ export function MobileItemBar() {
         onClick={() => next && open(next)}
         aria-label="Próximo item"
       >
-        ›
+        <Icon name="chevron-right" />
       </button>
     </div>
   )
@@ -112,7 +114,7 @@ export function BottomNav() {
         <button
           key={it.id}
           className={cn(
-            'grid h-[60px] place-items-center pt-1 text-[11px] font-bold tracking-[0.06em] text-faint uppercase',
+            'grid h-[60px] place-items-center pt-1 text-meta font-bold tracking-[0.06em] text-faint uppercase',
             it.on && 'text-strong shadow-[inset_0_3px_0_var(--vy-strong)]',
           )}
           onClick={it.act}
